@@ -1,17 +1,19 @@
 package be.shark_zekrom.ballons;
 
 import be.shark_zekrom.ballons.commands.Ballons;
+import be.shark_zekrom.ballons.inventory.Inventorys;
 import be.shark_zekrom.ballons.utils.Distance;
 import be.shark_zekrom.ballons.utils.Listener;
 import be.shark_zekrom.ballons.utils.SummonBallons;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Bat;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.entity.Parrot;
+import org.bukkit.entity.Zombie;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class Main extends JavaPlugin {
@@ -29,17 +31,19 @@ public class Main extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
 
         pm.registerEvents(new Listener(), this);
+        pm.registerEvents(new Inventorys(), this);
 
         this.getCommand("ballons+").setExecutor(new Ballons());
 
         new BukkitRunnable() {
             public void run() {
-                for (Bat bat : SummonBallons.balloons.values()) {
-                   Distance.line(bat, ((LivingEntity)bat).getLeashHolder());
+                for (Parrot parrot : SummonBallons.balloons.values()) {
+                   Distance.line(parrot, (parrot).getLeashHolder());
+                  parrot.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 10, 0));
 
                 }
             }
-        }.runTaskTimer(Main.getInstance(), 0L, 1L);
+        }.runTaskTimer(Main.getInstance(), 0L, 2L);
 
 
         FileConfiguration config = getConfig();

@@ -1,6 +1,7 @@
 package be.shark_zekrom.ballons.commands;
 
 import be.shark_zekrom.ballons.Main;
+import be.shark_zekrom.ballons.inventory.Inventorys;
 import be.shark_zekrom.ballons.utils.GetSkull;
 import be.shark_zekrom.ballons.utils.SummonBallons;
 import org.bukkit.ChatColor;
@@ -14,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class Ballons implements CommandExecutor {
 
@@ -28,6 +30,19 @@ public class Ballons implements CommandExecutor {
                 }else  {
                     player.sendMessage("You don't have a balloon enabled ");
                 }
+            }
+            if (args[0].equalsIgnoreCase("inventory")) {
+                File file = new File(Main.getInstance().getDataFolder(), "config.yml");
+                YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+
+                int ballons = 0;
+                ArrayList<String> list = new ArrayList<>();
+                for (String key : config.getKeys(false)) { // For each company key in the set
+                    list.add(key);
+                    ballons++;
+                }
+                Inventorys.inventory(player, ballons,0, list);
+
             }
         } else if (args.length > 1) {
 
@@ -51,14 +66,15 @@ public class Ballons implements CommandExecutor {
                 } else {
                     player.sendMessage("Balloon doesn't exist");
                 }
-            } else {
-                player.sendMessage("§b==========[Ballons+]==========");
-                player.sendMessage(ChatColor.AQUA + "");
-                player.sendMessage(ChatColor.AQUA + "/ballons+ spawn <name>");
-                player.sendMessage(ChatColor.AQUA + "/ballons+ off");
+            }
 
 
             }
+        else {
+            player.sendMessage("§b==========[Ballons+]==========");
+            player.sendMessage(ChatColor.AQUA + "");
+            player.sendMessage(ChatColor.AQUA + "/ballons+ spawn <name>");
+            player.sendMessage(ChatColor.AQUA + "/ballons+ off");
         }
         return true;
     }

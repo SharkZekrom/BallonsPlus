@@ -1,9 +1,7 @@
 package be.shark_zekrom.ballons.utils;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Bat;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -45,8 +43,8 @@ public class Listener implements org.bukkit.event.Listener {
     public void onTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
         if (SummonBallons.balloons.containsKey(player)) {
-            Bat bat = SummonBallons.balloons.get(player);
-            bat.teleport(player);
+            Parrot parrot = SummonBallons.balloons.get(player);
+            parrot.teleport(player);
         }
     }
 

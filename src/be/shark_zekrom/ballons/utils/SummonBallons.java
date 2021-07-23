@@ -11,14 +11,14 @@ import java.util.HashMap;
 
 public class SummonBallons {
 
-    public static HashMap<Player, Bat> balloons = new HashMap<>();
+    public static HashMap<Player, Parrot> balloons = new HashMap<>();
     public static HashMap<Player, ArmorStand> as = new HashMap<>();
     public static void summonBalloon(Player player, ItemStack item) {
-        Bat bat = (Bat) player.getWorld().spawnEntity(player.getLocation().add(0,2,0), EntityType.BAT);
-        bat.setInvisible(true);
+        Parrot parrot  = (Parrot) player.getWorld().spawnEntity(player.getLocation().add(0,2,0), EntityType.PARROT);
+        parrot.setInvisible(true);
 
-        balloons.put(player, bat);
-        ((LivingEntity)bat).setLeashHolder(player);
+        balloons.put(player, parrot);
+        ((LivingEntity)parrot).setLeashHolder(player);
 
         Location loc = player.getLocation().add(0,2,0);
         ArmorStand as1 = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
@@ -39,15 +39,15 @@ public class SummonBallons {
             SummonBallons.as.remove(player);
             as.remove();
 
-            Bat bat = SummonBallons.balloons.get(player);
+            Parrot parrot  = SummonBallons.balloons.get(player);
             SummonBallons.balloons.remove(player);
-            bat.remove();
+            parrot.remove();
         }
     }
 
     public static void removeAllBalloon() {
-        for (Bat bat : SummonBallons.balloons.values()) {
-            bat.remove();
+        for (Parrot parrot : SummonBallons.balloons.values()) {
+            parrot.remove();
         }
         for (ArmorStand as : SummonBallons.as.values()) {
             as.remove();

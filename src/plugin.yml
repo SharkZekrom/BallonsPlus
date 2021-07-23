@@ -1,7 +1,8 @@
 name: Ballons
-main: be.shark_zekrom.Main
+main: be.shark_zekrom.ballons.Main
 version: 0.1
-description: Ballons+
+api-version: 1.13
+description: Ballons
 commands:
   ballons+:
     description: ballons

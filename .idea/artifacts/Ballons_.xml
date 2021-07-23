@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Ballons+">
+    <output-path>$USER_HOME$/OneDrive</output-path>
+    <root id="archive" name="Ballons+.jar">
+      <element id="module-output" name="Ballons+" />
+    </root>
+  </artifact>
+</component>

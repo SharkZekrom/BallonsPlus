@@ -14,17 +14,16 @@ public class SummonBallons {
     public static HashMap<Player, Bat> balloons = new HashMap<>();
     public static HashMap<Player, ArmorStand> as = new HashMap<>();
     public static void summonBalloon(Player player, ItemStack item) {
-
-        Bat bat = (Bat) player.getWorld().spawnEntity(player.getLocation(), EntityType.BAT);
+        Bat bat = (Bat) player.getWorld().spawnEntity(player.getLocation().add(0,2,0), EntityType.BAT);
         bat.setInvisible(true);
 
         balloons.put(player, bat);
         ((LivingEntity)bat).setLeashHolder(player);
 
-        Location loc = player.getLocation();
+        Location loc = player.getLocation().add(0,2,0);
         ArmorStand as1 = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
-        as1.setCustomNameVisible(false);
         as1.setVisible(false);
+        as1.setCustomNameVisible(false);
         as1.setGravity(false);
         as1.setCanPickupItems(false);
         as1.setArms(true);

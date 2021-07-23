@@ -72,6 +72,11 @@ public class Inventorys implements Listener {
                 nextmeta.setDisplayName("test");
                 next.setItemMeta(nextmeta);
                 inv.setItem(53, next);
+                ItemStack previous = new ItemStack(Material.ARROW);
+                ItemMeta previousmeta = previous.getItemMeta();
+                previousmeta.setDisplayName("test");
+                previous.setItemMeta(previousmeta);
+                inv.setItem(45, previous);
                 return;
             }
         }
@@ -85,13 +90,26 @@ public class Inventorys implements Listener {
         int slot = event.getSlot();
         if (event.getView().getTitle().equalsIgnoreCase("Ballons")) {
             event.setCancelled(true);
+            if (slot == 45) {
+                player.closeInventory();
+
+                File file = new File(Main.getInstance().getDataFolder(), "config.yml");
+                YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+
+                String[] number = inv.getItem(10).getItemMeta().getDisplayName().split(" :");
+                ArrayList<String> list = new ArrayList<>();
+                for (String key : config.getKeys(false)) { // For each company key in the set
+                    list.add(key);
+                }
+                inventory(player, Integer.parseInt(number[0]), Integer.parseInt(number[0]) -29, list);
+            }
             if (slot == 53) {
                 player.closeInventory();
 
                 File file = new File(Main.getInstance().getDataFolder(), "config.yml");
                 YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-                String[] number = inv.getItem(37).getItemMeta().getDisplayName().split(" :");
+                String[] number = inv.getItem(43).getItemMeta().getDisplayName().split(" :");
 
                 ArrayList<String> list = new ArrayList<>();
                 for (String key : config.getKeys(false)) { // For each company key in the set

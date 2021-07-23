@@ -1,0 +1,7 @@
+name: Ballons
+main: be.shark_zekrom.Main
+version: 0.1
+description: Ballons+
+commands:
+  ballons+:
+    description: ballons

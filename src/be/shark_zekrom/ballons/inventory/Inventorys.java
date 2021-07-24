@@ -22,7 +22,8 @@ public class Inventorys implements Listener {
     public static void inventory(Player player, int ballons, int loop, ArrayList<String> list) {
         File file = new File(Main.getInstance().getDataFolder(), "config.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-
+        player.sendMessage("loop" + loop);
+        player.sendMessage("ballons" + ballons);
         Inventory inv = null;
         if (ballons <= 7) {
 

@@ -2,6 +2,7 @@ package be.shark_zekrom.ballons.inventory;
 
 import be.shark_zekrom.ballons.Main;
 import be.shark_zekrom.ballons.utils.GetSkull;
+import be.shark_zekrom.ballons.utils.SlotMenu;
 import be.shark_zekrom.ballons.utils.SummonBallons;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -71,11 +72,13 @@ public class Inventorys implements Listener {
             if (slot == 44) {
                 String[] number = inv.getItem(10).getItemMeta().getDisplayName().split(" : ");
                 if (Integer.parseInt(number[0]) == 1) {
-                    ItemStack previous = new ItemStack(Material.AIR);
+                    ItemStack previous = new ItemStack(Material.ORANGE_STAINED_GLASS_PANE);
                     inv.setItem(45, previous);
                 }
                 else {
                     if (player.getOpenInventory().getTopInventory().getSize() == 27) {
+                        SlotMenu.slot26(inv);
+
                         ItemStack previous = new ItemStack(Material.ARROW);
                         ItemMeta previousmeta = previous.getItemMeta();
                         previousmeta.setDisplayName(ChatColor.DARK_GRAY + "« " + ChatColor.YELLOW + "Previous");
@@ -90,6 +93,8 @@ public class Inventorys implements Listener {
 
                     }
                     if (player.getOpenInventory().getTopInventory().getSize() == 36) {
+                        SlotMenu.slot35(inv);
+
                         ItemStack previous = new ItemStack(Material.ARROW);
                         ItemMeta previousmeta = previous.getItemMeta();
                         previousmeta.setDisplayName(ChatColor.DARK_GRAY + "« " + ChatColor.YELLOW + "Previous");
@@ -103,6 +108,8 @@ public class Inventorys implements Listener {
                         inv.setItem(31, remove);
                     }
                     if (player.getOpenInventory().getTopInventory().getSize() == 45) {
+                        SlotMenu.slot44(inv);
+
                         ItemStack previous = new ItemStack(Material.ARROW);
                         ItemMeta previousmeta = previous.getItemMeta();
                         previousmeta.setDisplayName(ChatColor.DARK_GRAY + "« " + ChatColor.YELLOW + "Previous");
@@ -114,8 +121,11 @@ public class Inventorys implements Listener {
                         removemeta.setDisplayName(ChatColor.RED + "Remove");
                         remove.setItemMeta(removemeta);
                         inv.setItem(40, remove);
+
                     }
                     if (player.getOpenInventory().getTopInventory().getSize() == 54) {
+                        SlotMenu.slot53(inv);
+
                         ItemStack previous = new ItemStack(Material.ARROW);
                         ItemMeta previousmeta = previous.getItemMeta();
                         previousmeta.setDisplayName(ChatColor.DARK_GRAY + "« " + ChatColor.YELLOW + "Previous");
@@ -127,6 +137,7 @@ public class Inventorys implements Listener {
                         removemeta.setDisplayName(ChatColor.RED + "Remove");
                         remove.setItemMeta(removemeta);
                         inv.setItem(49, remove);
+
                     }
                 }
                 ItemStack next = new ItemStack(Material.ARROW);
@@ -138,6 +149,7 @@ public class Inventorys implements Listener {
             }
             else {
                 if (player.getOpenInventory().getTopInventory().getSize() == 27) {
+                    SlotMenu.slot26(inv);
                     ItemStack previous = new ItemStack(Material.ARROW);
                     ItemMeta previousmeta = previous.getItemMeta();
                     previousmeta.setDisplayName(ChatColor.DARK_GRAY + "« " + ChatColor.YELLOW + "Previous");                    previous.setItemMeta(previousmeta);
@@ -149,9 +161,10 @@ public class Inventorys implements Listener {
                     removemeta.setDisplayName(ChatColor.RED + "Remove");
                     remove.setItemMeta(removemeta);
                     inv.setItem(22, remove);
-
                 }
                 if (player.getOpenInventory().getTopInventory().getSize() == 36) {
+                    SlotMenu.slot35(inv);
+
                     ItemStack previous = new ItemStack(Material.ARROW);
                     ItemMeta previousmeta = previous.getItemMeta();
                     previousmeta.setDisplayName(ChatColor.DARK_GRAY + "« " + ChatColor.YELLOW + "Previous");                    previous.setItemMeta(previousmeta);
@@ -161,9 +174,10 @@ public class Inventorys implements Listener {
                     ItemMeta removemeta = remove.getItemMeta();
                     removemeta.setDisplayName(ChatColor.RED + "Remove");
                     remove.setItemMeta(removemeta);
-                    inv.setItem(31, remove);
-                }
+                    inv.setItem(31, remove); }
                 if (player.getOpenInventory().getTopInventory().getSize() == 45) {
+                    SlotMenu.slot44(inv);
+
                     ItemStack previous = new ItemStack(Material.ARROW);
                     ItemMeta previousmeta = previous.getItemMeta();
                     previousmeta.setDisplayName(ChatColor.DARK_GRAY + "« " + ChatColor.YELLOW + "Previous");                    previous.setItemMeta(previousmeta);
@@ -176,6 +190,8 @@ public class Inventorys implements Listener {
                     inv.setItem(40, remove);
                 }
                 if (player.getOpenInventory().getTopInventory().getSize() == 54) {
+                    SlotMenu.slot53(inv);
+
                     ItemStack previous = new ItemStack(Material.ARROW);
                     ItemMeta previousmeta = previous.getItemMeta();
                     previousmeta.setDisplayName(ChatColor.DARK_GRAY + "« " + ChatColor.YELLOW + "Previous");                    previous.setItemMeta(previousmeta);

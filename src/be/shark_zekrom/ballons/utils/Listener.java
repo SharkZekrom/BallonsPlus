@@ -5,6 +5,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerUnleashEntityEvent;
@@ -51,6 +52,14 @@ public class Listener implements org.bukkit.event.Listener {
     @EventHandler
     public void onDisconnect(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+        if (SummonBallons.balloons.containsKey(player)) {
+            SummonBallons.removeBalloon(player);
+        }
+    }
+
+    @EventHandler
+    public void onDeath(PlayerDeathEvent event) {
+        Player player = event.getEntity();
         if (SummonBallons.balloons.containsKey(player)) {
             SummonBallons.removeBalloon(player);
         }

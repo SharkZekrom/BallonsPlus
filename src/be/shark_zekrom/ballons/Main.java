@@ -38,7 +38,7 @@ public class Main extends JavaPlugin {
             public void run() {
                 for (Parrot parrot : SummonBallons.balloons.values()) {
                    Distance.line(parrot, (parrot).getLeashHolder());
-                  parrot.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 10, 0));
+               //   parrot.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 10, 0,false,false));
 
                 }
             }

@@ -24,7 +24,6 @@ public class Inventorys implements Listener {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
         Inventory inv = null;
-        player.sendMessage(String.valueOf(ballons));
         if (ballons <= 7) {
 
             inv = Bukkit.createInventory(null, 27, "Ballons");
@@ -66,17 +65,24 @@ public class Inventorys implements Listener {
             if (slot == 35) {
                 slot = 37;
             }
+
             if (slot == 44) {
+                player.sendMessage(String.valueOf(inv.getItem(43)));
+                if (inv.getItem(43) != null) {
+                    String[] number = inv.getItem(43).getItemMeta().getDisplayName().split(" :");
+                    if (Integer.parseInt(number[0]) >= 29) {
+                        ItemStack previous = new ItemStack(Material.ARROW);
+                        ItemMeta previousmeta = previous.getItemMeta();
+                        previousmeta.setDisplayName("test");
+                        previous.setItemMeta(previousmeta);
+                        inv.setItem(45, previous);
+                    }
+                }
                 ItemStack next = new ItemStack(Material.ARROW);
                 ItemMeta nextmeta = next.getItemMeta();
                 nextmeta.setDisplayName("test");
                 next.setItemMeta(nextmeta);
                 inv.setItem(53, next);
-                ItemStack previous = new ItemStack(Material.ARROW);
-                ItemMeta previousmeta = previous.getItemMeta();
-                previousmeta.setDisplayName("test");
-                previous.setItemMeta(previousmeta);
-                inv.setItem(45, previous);
                 return;
             }
         }

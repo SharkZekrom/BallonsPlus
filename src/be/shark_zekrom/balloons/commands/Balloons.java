@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -21,59 +22,76 @@ public class Balloons implements CommandExecutor {
 
         Player player = (Player) commandSender;
         if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("help")) {
+                player.sendMessage("§b==========[Balloons+]==========");
+                player.sendMessage(ChatColor.AQUA + "");
+                player.sendMessage(ChatColor.AQUA + "/balloons+ help");
+                //  player.sendMessage(ChatColor.AQUA + "/balloons+ inventory");
+                player.sendMessage(ChatColor.AQUA + "/balloons+ spawn <name>");
+                player.sendMessage(ChatColor.AQUA + "/balloons+ remove");
+            }
             if (args[0].equalsIgnoreCase("remove")) {
                 if (SummonBallons.balloons.containsKey(player)) {
                     SummonBallons.removeBalloon(player);
                 }
-                if (args[0].equalsIgnoreCase("inventory")) {
-                    File file = new File(Main.getInstance().getDataFolder(), "config.yml");
-                    YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+            }
+            //if (args[0].equalsIgnoreCase("inventory")) {
+            //                File file = new File(Main.getInstance().getDataFolder(), "config.yml");
+            //                YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+            //
+            //                int ballons = 0;
+            //                ArrayList<String> list = new ArrayList<>();
+            //
+            //                ConfigurationSection cs = config.getConfigurationSection("Balloons");
+            //                for(String key : cs.getKeys(false)) {
+            //                    list.add(key);
+            //                    ballons++;
+            //                }
+            //
+            //                Inventorys.inventory(player, ballons, 0, list);
+            //
+            //            }
+        } else if (args.length > 1) {
 
-                    int ballons = 0;
-                    ArrayList<String> list = new ArrayList<>();
-                    for (String key : config.getKeys(false)) { // For each company key in the set
-                        list.add(key);
-                        ballons++;
-                    }
-                    Inventorys.inventory(player, ballons, 0, list);
+            if (args[0].equalsIgnoreCase("spawn")) {
+                File file = new File(Main.getInstance().getDataFolder(), "config.yml");
+                YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+                if (config.getString(args[1]) != null) {
 
-                }
-            } else if (args.length > 1) {
-
-                if (args[0].equalsIgnoreCase("spawn")) {
-                    File file = new File(Main.getInstance().getDataFolder(), "config.yml");
-                    YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-                    if (config.getString(args[1]) != null) {
-
-                        String permission = config.getString(args[1] + ".permission");
-                        if (permission != null) {
-                            if (commandSender.hasPermission(permission)) {
+                    String permission = config.getString(args[1] + ".permission");
+                    if (permission != null) {
+                        if (commandSender.hasPermission(permission)) {
+                            if (SummonBallons.balloons.containsKey(player)) {
                                 SummonBallons.removeBalloon(player);
-                                SummonBallons.summonBalloon(player, GetSkull.createSkull(config.getString(args[1] + ".head")));
-                            } else {
-                                player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("NoBalloonsPermission"));
                             }
-                        } else {
-                            SummonBallons.removeBalloon(player);
                             SummonBallons.summonBalloon(player, GetSkull.createSkull(config.getString(args[1] + ".head")));
                             player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("BalloonsSummoned"));
 
+                        } else {
+                            player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("NoBalloonsPermission"));
                         }
                     } else {
-                        player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("NoBalloonsFound"));
+                        if (SummonBallons.balloons.containsKey(player)) {
+                            SummonBallons.removeBalloon(player);
+                        }
+                        SummonBallons.summonBalloon(player, GetSkull.createSkull(config.getString(args[1] + ".head")));
+                        player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("BalloonsSummoned"));
+
                     }
+                } else {
+                    player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("NoBalloonsFound"));
                 }
-
-
-            } else {
-                player.sendMessage("§b==========[Balloons+]==========");
-                player.sendMessage(ChatColor.AQUA + "");
-                player.sendMessage(ChatColor.AQUA + "/balloons+ inventory");
-                player.sendMessage(ChatColor.AQUA + "/balloons+ spawn <name>");
-                player.sendMessage(ChatColor.AQUA + "/balloons+ remove");
             }
+        } else {
+            player.sendMessage("§b==========[Balloons+]==========");
+            player.sendMessage(ChatColor.AQUA + "");
+            player.sendMessage(ChatColor.AQUA + "/balloons+ help");
+            //  player.sendMessage(ChatColor.AQUA + "/balloons+ inventory");
+            player.sendMessage(ChatColor.AQUA + "/balloons+ spawn <name>");
+            player.sendMessage(ChatColor.AQUA + "/balloons+ remove");
         }
         return false;
     }
+
 
 }

@@ -222,7 +222,9 @@ public class Inventorys implements Listener {
                 YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
                 String[] number = inv.getItem(slot).getItemMeta().getDisplayName().split(" : ");
-                SummonBallons.removeBalloon(player);
+                if (SummonBallons.balloons.containsKey(player)) {
+                    SummonBallons.removeBalloon(player);
+                }
                 SummonBallons.summonBalloon(player,GetSkull.createSkull(config.getString(number[1] + ".head")));
                 player.closeInventory();
             }

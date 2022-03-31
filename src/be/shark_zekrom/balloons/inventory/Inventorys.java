@@ -1,14 +1,13 @@
-package be.shark_zekrom.ballons.inventory;
+package be.shark_zekrom.balloons.inventory;
 
-import be.shark_zekrom.ballons.Main;
-import be.shark_zekrom.ballons.utils.GetSkull;
-import be.shark_zekrom.ballons.utils.SlotMenu;
-import be.shark_zekrom.ballons.utils.SummonBallons;
+import be.shark_zekrom.balloons.Main;
+import be.shark_zekrom.balloons.utils.GetSkull;
+import be.shark_zekrom.balloons.utils.SlotMenu;
+import be.shark_zekrom.balloons.utils.SummonBallons;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

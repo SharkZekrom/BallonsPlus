@@ -1,4 +1,4 @@
-package be.shark_zekrom.ballons.utils;
+package be.shark_zekrom.balloons.utils;
 
 import org.bukkit.entity.*;
 import org.bukkit.util.Vector;

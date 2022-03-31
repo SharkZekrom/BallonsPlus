@@ -1,9 +1,7 @@
-package be.shark_zekrom.ballons.utils;
+package be.shark_zekrom.balloons.utils;
 
-import io.netty.util.collection.ByteCollections;
-import org.bukkit.Effect;
+import be.shark_zekrom.balloons.Main;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 
@@ -13,12 +11,14 @@ public class SummonBallons {
 
     public static HashMap<Player, Parrot> balloons = new HashMap<>();
     public static HashMap<Player, ArmorStand> as = new HashMap<>();
+
     public static void summonBalloon(Player player, ItemStack item) {
         Parrot parrot  = (Parrot) player.getWorld().spawnEntity(player.getLocation().add(0,2,0), EntityType.PARROT);
         parrot.setInvisible(true);
+        parrot.setSilent(true);
 
         balloons.put(player, parrot);
-        ((LivingEntity)parrot).setLeashHolder(player);
+        parrot.setLeashHolder(player);
 
         Location loc = player.getLocation().add(0,2,0);
         ArmorStand as1 = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
@@ -34,15 +34,15 @@ public class SummonBallons {
     }
 
     public static void removeBalloon(Player player) {
-        if (SummonBallons.as.get(player) != null) {
-            ArmorStand as = SummonBallons.as.get(player);
-            SummonBallons.as.remove(player);
-            as.remove();
+        ArmorStand as = SummonBallons.as.get(player);
+        SummonBallons.as.remove(player);
+        as.remove();
 
-            Parrot parrot  = SummonBallons.balloons.get(player);
-            SummonBallons.balloons.remove(player);
-            parrot.remove();
-        }
+        Parrot parrot = SummonBallons.balloons.get(player);
+        SummonBallons.balloons.remove(player);
+        parrot.remove();
+
+        player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("BalloonsRemoved"));
     }
 
     public static void removeAllBalloon() {

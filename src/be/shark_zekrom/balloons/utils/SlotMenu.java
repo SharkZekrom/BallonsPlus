@@ -1,14 +1,8 @@
-package be.shark_zekrom.ballons.utils;
+package be.shark_zekrom.balloons.utils;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import java.io.File;
-import java.util.ArrayList;
 
 public class SlotMenu {
 

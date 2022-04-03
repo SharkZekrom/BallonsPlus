@@ -93,13 +93,18 @@ public class Inventorys implements Listener {
                     YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
                     String[] number = inv.getItem(slot).getItemMeta().getDisplayName().split(" : ");
-                    if (SummonBallons.balloons.containsKey(player)) {
-                        SummonBallons.removeBalloon(player);
-                    }
-                    SummonBallons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + number[1] + ".head")));
-                    player.closeInventory();
-                }
 
+                    String permission = config.getString("Balloons." + number[1] + ".permission");
+                    if (permission != null) {
+                        if (player.hasPermission(permission)) {
+                            if (SummonBallons.balloons.containsKey(player)) {
+                                SummonBallons.removeBalloon(player);
+                            }
+                            SummonBallons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + number[1] + ".head")));
+                            player.closeInventory();
+                        }
+                    }
+                }
 
                 if (event.getCurrentItem().getType().equals(Material.BARRIER)) {
                     player.closeInventory();

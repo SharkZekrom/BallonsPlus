@@ -86,7 +86,7 @@ public class Balloons implements CommandExecutor {
             player.sendMessage("§b==========[Balloons+]==========");
             player.sendMessage(ChatColor.AQUA + "");
             player.sendMessage(ChatColor.AQUA + "/balloons+ help");
-            //  player.sendMessage(ChatColor.AQUA + "/balloons+ inventory");
+            player.sendMessage(ChatColor.AQUA + "/balloons+ inventory");
             player.sendMessage(ChatColor.AQUA + "/balloons+ spawn <name>");
             player.sendMessage(ChatColor.AQUA + "/balloons+ remove");
         }

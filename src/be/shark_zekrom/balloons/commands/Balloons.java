@@ -26,7 +26,7 @@ public class Balloons implements CommandExecutor {
                 player.sendMessage("§b==========[Balloons+]==========");
                 player.sendMessage(ChatColor.AQUA + "");
                 player.sendMessage(ChatColor.AQUA + "/balloons+ help");
-                //  player.sendMessage(ChatColor.AQUA + "/balloons+ inventory");
+                player.sendMessage(ChatColor.AQUA + "/balloons+ inventory");
                 player.sendMessage(ChatColor.AQUA + "/balloons+ spawn <name>");
                 player.sendMessage(ChatColor.AQUA + "/balloons+ remove");
             }
@@ -35,36 +35,36 @@ public class Balloons implements CommandExecutor {
                     SummonBallons.removeBalloon(player);
                 }
             }
-            //if (args[0].equalsIgnoreCase("inventory")) {
-            //                File file = new File(Main.getInstance().getDataFolder(), "config.yml");
-            //                YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-            //
-            //                int ballons = 0;
-            //                ArrayList<String> list = new ArrayList<>();
-            //
-            //                ConfigurationSection cs = config.getConfigurationSection("Balloons");
-            //                for(String key : cs.getKeys(false)) {
-            //                    list.add(key);
-            //                    ballons++;
-            //                }
-            //
-            //                Inventorys.inventory(player, ballons, 0, list);
-            //
-            //            }
+            if (args[0].equalsIgnoreCase("inventory")) {
+                File file = new File(Main.getInstance().getDataFolder(), "config.yml");
+                YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+
+                int ballons = 0;
+                ArrayList<String> list = new ArrayList<>();
+
+                ConfigurationSection cs = config.getConfigurationSection("Balloons");
+                for (String key : cs.getKeys(false)) {
+                    list.add(key);
+                    ballons++;
+                }
+
+                Inventorys.inventory(player, ballons, 0, list);
+
+            }
         } else if (args.length > 1) {
 
             if (args[0].equalsIgnoreCase("spawn")) {
                 File file = new File(Main.getInstance().getDataFolder(), "config.yml");
                 YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-                if (config.getString(args[1]) != null) {
+                if (config.getString("Balloons." + args[1]) != null) {
 
-                    String permission = config.getString(args[1] + ".permission");
+                    String permission = config.getString("Balloons." + args[1] + ".permission");
                     if (permission != null) {
                         if (commandSender.hasPermission(permission)) {
                             if (SummonBallons.balloons.containsKey(player)) {
                                 SummonBallons.removeBalloon(player);
                             }
-                            SummonBallons.summonBalloon(player, GetSkull.createSkull(config.getString(args[1] + ".head")));
+                            SummonBallons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + args[1] + ".head")));
                             player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("BalloonsSummoned"));
 
                         } else {
@@ -74,7 +74,7 @@ public class Balloons implements CommandExecutor {
                         if (SummonBallons.balloons.containsKey(player)) {
                             SummonBallons.removeBalloon(player);
                         }
-                        SummonBallons.summonBalloon(player, GetSkull.createSkull(config.getString(args[1] + ".head")));
+                        SummonBallons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + args[1] + ".head")));
                         player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("BalloonsSummoned"));
 
                     }

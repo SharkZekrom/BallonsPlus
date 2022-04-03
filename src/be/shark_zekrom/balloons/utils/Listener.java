@@ -1,5 +1,6 @@
 package be.shark_zekrom.balloons.utils;
 
+import be.shark_zekrom.balloons.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -9,6 +10,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerUnleashEntityEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class Listener implements org.bukkit.event.Listener {
 
@@ -43,9 +46,27 @@ public class Listener implements org.bukkit.event.Listener {
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
+
         if (SummonBallons.balloons.containsKey(player)) {
+            ArmorStand as = SummonBallons.as.get(player);
+
+            ItemStack item = as.getEquipment().getHelmet();
+
+            SummonBallons.as.remove(player);
+            as.remove();
+
             Parrot parrot = SummonBallons.balloons.get(player);
-            parrot.teleport(player);
+            SummonBallons.balloons.remove(player);
+            parrot.remove();
+
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    SummonBallons.summonBalloon(player,item);
+
+                }
+            }.runTaskLater(Main.getInstance(),10L);
+
         }
     }
 
@@ -64,5 +85,6 @@ public class Listener implements org.bukkit.event.Listener {
             SummonBallons.removeBalloon(player);
         }
     }
+
 
 }

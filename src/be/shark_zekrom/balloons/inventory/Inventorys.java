@@ -30,19 +30,19 @@ public class Inventorys implements Listener {
         File file = new File(Main.getInstance().getDataFolder(), "config.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-        Inventory inventory = Bukkit.createInventory(null, 54, "Ballons");
+        Inventory inventory = Bukkit.createInventory(null, 54, Main.getInstance().getConfig().getString("BalloonsMenuName"));
         player.openInventory(inventory);
 
         ItemStack remove = new ItemStack(Material.BARRIER);
         ItemMeta removemeta = remove.getItemMeta();
-        removemeta.setDisplayName(ChatColor.RED + "Remove");
+        removemeta.setDisplayName(Main.getInstance().getConfig().getString("BalloonsMenuRemove"));
         remove.setItemMeta(removemeta);
         inventory.setItem(49, remove);
 
         if (pages.get(player) > 0) {
             ItemStack previous = new ItemStack(Material.ARROW);
             ItemMeta previousmeta = previous.getItemMeta();
-            previousmeta.setDisplayName(ChatColor.DARK_GRAY + "« " + ChatColor.YELLOW + "Previous");
+            previousmeta.setDisplayName(Main.getInstance().getConfig().getString("BalloonsMenuPrevious"));
             previous.setItemMeta(previousmeta);
             inventory.setItem(48, previous);
         }
@@ -63,7 +63,7 @@ public class Inventorys implements Listener {
                     if (slot != ballons) {
                         ItemStack next = new ItemStack(Material.ARROW);
                         ItemMeta nextmeta = next.getItemMeta();
-                        nextmeta.setDisplayName(ChatColor.DARK_GRAY + "» " + ChatColor.YELLOW + "Next");
+                        nextmeta.setDisplayName(Main.getInstance().getConfig().getString("BalloonsMenuNext"));
                         next.setItemMeta(nextmeta);
                         inventory.setItem(50, next);
                     }
@@ -81,7 +81,7 @@ public class Inventorys implements Listener {
         Player player = (Player) event.getWhoClicked();
 
         int slot = event.getSlot();
-        if (event.getView().getTitle().equalsIgnoreCase("Ballons")) {
+        if (event.getView().getTitle().equalsIgnoreCase(Main.getInstance().getConfig().getString("BalloonsMenuName"))) {
             event.setCancelled(true);
 
 

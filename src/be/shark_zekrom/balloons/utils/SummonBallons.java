@@ -42,7 +42,6 @@ public class SummonBallons {
         SummonBallons.balloons.remove(player);
         parrot.remove();
 
-        player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("BalloonsRemoved"));
     }
 
     public static void removeAllBalloon() {

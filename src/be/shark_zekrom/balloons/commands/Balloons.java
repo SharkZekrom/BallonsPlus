@@ -1,19 +1,17 @@
 package be.shark_zekrom.balloons.commands;
 
 import be.shark_zekrom.balloons.Main;
-import be.shark_zekrom.balloons.inventory.Inventorys;
+import be.shark_zekrom.balloons.inventory.Menu;
 import be.shark_zekrom.balloons.utils.GetSkull;
 import be.shark_zekrom.balloons.utils.SummonBallons;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.util.ArrayList;
 
 public class Balloons implements CommandExecutor {
 
@@ -33,11 +31,13 @@ public class Balloons implements CommandExecutor {
             if (args[0].equalsIgnoreCase("remove")) {
                 if (SummonBallons.balloons.containsKey(player)) {
                     SummonBallons.removeBalloon(player);
+                    player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("BalloonsRemoved"));
+
                 }
             }
             if (args[0].equalsIgnoreCase("inventory")) {
 
-                Inventorys.inventory(player, 0);
+                Menu.inventory(player, 0);
 
             }
         } else if (args.length > 1) {
@@ -62,6 +62,8 @@ public class Balloons implements CommandExecutor {
                     } else {
                         if (SummonBallons.balloons.containsKey(player)) {
                             SummonBallons.removeBalloon(player);
+                            player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("BalloonsRemoved"));
+
                         }
                         SummonBallons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + args[1] + ".head")));
                         player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("BalloonsSummoned"));

@@ -1,21 +1,17 @@
 package be.shark_zekrom.balloons;
 
 import be.shark_zekrom.balloons.commands.Balloons;
-import be.shark_zekrom.balloons.inventory.Inventorys;
+import be.shark_zekrom.balloons.inventory.Menu;
 import be.shark_zekrom.balloons.utils.Distance;
 import be.shark_zekrom.balloons.utils.Listener;
 import be.shark_zekrom.balloons.utils.SummonBallons;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.io.File;
-import java.util.ArrayList;
 
 public class Main extends JavaPlugin {
 
@@ -24,13 +20,15 @@ public class Main extends JavaPlugin {
         return instance;
     }
 
+    public static boolean showOnlyBallonsWithPermission = false;
+
     @Override
     public void onEnable() {
         instance = this;
         PluginManager pm = getServer().getPluginManager();
 
         pm.registerEvents(new Listener(), this);
-        pm.registerEvents(new Inventorys(), this);
+        pm.registerEvents(new Menu(), this);
 
         this.getCommand("balloons+").setExecutor(new Balloons());
 
@@ -69,8 +67,9 @@ public class Main extends JavaPlugin {
 
 
         ConfigurationSection cs = config.getConfigurationSection("Balloons");
-        Inventorys.list.addAll(cs.getKeys(false));
+        Menu.list.addAll(cs.getKeys(false));
 
+        showOnlyBallonsWithPermission = config.getBoolean("ShowOnlyBallonsWithPermission");
 
         Bukkit.getLogger().info("Balloons+ enabled !");
 

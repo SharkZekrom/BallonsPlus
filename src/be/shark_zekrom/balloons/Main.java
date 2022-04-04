@@ -47,6 +47,7 @@ public class Main extends JavaPlugin {
 
         FileConfiguration config = getConfig();
 
+        config.addDefault("ShowOnlyBallonsWithPermission", false);
         config.addDefault("NoBalloonsFound", "§bNo balloons found with this name.");
         config.addDefault("NoBalloonsPermission", "§bYou do not have permission to use this balloons.");
         config.addDefault("BalloonsRemoved", "§bBalloons removed.");
@@ -65,13 +66,8 @@ public class Main extends JavaPlugin {
         saveConfig();
 
 
-        int ballons = 0;
-
         ConfigurationSection cs = config.getConfigurationSection("Balloons");
-        for (String key : cs.getKeys(false)) {
-            Inventorys.list.add(key);
-            ballons++;
-        }
+        Inventorys.list.addAll(cs.getKeys(false));
 
 
         Bukkit.getLogger().info("Balloons+ enabled !");

@@ -65,7 +65,11 @@ public class Inventorys implements Listener {
 
                 ItemStack item = new ItemStack(GetSkull.createSkull(config.getString("Balloons." + list.get(i + loop) + ".head")));
                 ItemMeta itemmeta = item.getItemMeta();
-                itemmeta.setDisplayName("§e" + list.get(i + loop));
+                if (config.getString("Balloons." + list.get(i + loop) + ".displayname") != null) {
+                    itemmeta.setDisplayName(config.getString("Balloons." + list.get(i + loop) + ".displayname") );
+                } else {
+                    itemmeta.setDisplayName("§e" + list.get(i + loop));
+                }
                 ArrayList<String> lore = new ArrayList<>();
                 lore.add("");
                 if (player.hasPermission(config.getString("Balloons." + list.get(i + loop) + ".permission"))) {
@@ -74,7 +78,6 @@ public class Inventorys implements Listener {
                     lore.add(Main.getInstance().getConfig().getString("BalloonsMenuNoPermissionToSummon"));
                 }
                 itemmeta.setLore(lore);
-
                 item.setItemMeta(itemmeta);
                 inventory.setItem(slot, item);
                 slot++;
@@ -112,16 +115,28 @@ public class Inventorys implements Listener {
                     File file = new File(Main.getInstance().getDataFolder(), "config.yml");
                     YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-                    String permission = config.getString("Balloons." + inv.getItem(slot).getItemMeta().getDisplayName().substring(2) + ".permission");
-                    if (permission != null) {
-                        if (player.hasPermission(permission)) {
-                            if (SummonBallons.balloons.containsKey(player)) {
-                                SummonBallons.removeBalloon(player);
+                    int ballons = 0;
+                    ConfigurationSection cs = config.getConfigurationSection("Balloons");
+                    for (String key : cs.getKeys(false)) {
+                        if (ballons == (slot + pages.get(player))) {
+
+                            String permission = config.getString("Balloons." + key + ".permission");
+                            if (permission != null) {
+                                if (player.hasPermission(permission)) {
+                                    if (SummonBallons.balloons.containsKey(player)) {
+                                        SummonBallons.removeBalloon(player);
+                                    }
+                                    SummonBallons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + key + ".head")));
+                                    player.closeInventory();
+                                }
                             }
-                            SummonBallons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + inv.getItem(slot).getItemMeta().getDisplayName().substring(2) + ".head")));
-                            player.closeInventory();
+
+                            return;
                         }
+                        ballons++;
                     }
+
+
                 }
 
                 if (event.getCurrentItem().getType().equals(Material.BARRIER)) {

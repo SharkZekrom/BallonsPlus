@@ -24,14 +24,25 @@ import java.util.HashMap;
 public class Inventorys implements Listener {
 
     public static HashMap<Player, Integer> pages = new HashMap<>();
+    public static ArrayList<String> list = new ArrayList<>();
 
-    public static void inventory(Player player, int ballons, int loop, ArrayList<String> list) {
+    public static void inventory(Player player, int loop) {
         pages.put(player, loop);
         File file = new File(Main.getInstance().getDataFolder(), "config.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-        Inventory inventory = Bukkit.createInventory(null, 54, Main.getInstance().getConfig().getString("BalloonsMenuName"));
+        Inventory inventory = Bukkit.createInventory(null, 54, Main.getInstance().getConfig().getString("BalloonsMenuName") + " (" + ((loop / 45) + 1 ) + "/" + ((list.size() / 45) + 1) +")");
         player.openInventory(inventory);
+
+        Integer[] border = {45,46,47,51,52,53};
+        for (int i = 0; i < border.length; i++) {
+            ItemStack borderItem = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+            ItemMeta borderMeta = borderItem.getItemMeta();
+            borderMeta.setDisplayName(" ");
+            borderItem.setItemMeta(borderMeta);
+            inventory.setItem(border[i], borderItem);
+
+        }
 
         ItemStack remove = new ItemStack(Material.BARRIER);
         ItemMeta removemeta = remove.getItemMeta();
@@ -54,13 +65,22 @@ public class Inventorys implements Listener {
 
                 ItemStack item = new ItemStack(GetSkull.createSkull(config.getString("Balloons." + list.get(i + loop) + ".head")));
                 ItemMeta itemmeta = item.getItemMeta();
-                itemmeta.setDisplayName(i + loop + 1 + " : " + list.get(i + loop));
+                itemmeta.setDisplayName("§e" + list.get(i + loop));
+                ArrayList<String> lore = new ArrayList<>();
+                lore.add("");
+                if (player.hasPermission(config.getString("Balloons." + list.get(i + loop) + ".permission"))) {
+                    lore.add(Main.getInstance().getConfig().getString("BalloonsMenuClickToSummon"));
+                } else {
+                    lore.add(Main.getInstance().getConfig().getString("BalloonsMenuNoPermissionToSummon"));
+                }
+                itemmeta.setLore(lore);
+
                 item.setItemMeta(itemmeta);
                 inventory.setItem(slot, item);
                 slot++;
 
                 if (slot == 45) {
-                    if (slot != ballons) {
+                    if (slot != list.size()) {
                         ItemStack next = new ItemStack(Material.ARROW);
                         ItemMeta nextmeta = next.getItemMeta();
                         nextmeta.setDisplayName(Main.getInstance().getConfig().getString("BalloonsMenuNext"));
@@ -81,7 +101,7 @@ public class Inventorys implements Listener {
         Player player = (Player) event.getWhoClicked();
 
         int slot = event.getSlot();
-        if (event.getView().getTitle().equalsIgnoreCase(Main.getInstance().getConfig().getString("BalloonsMenuName"))) {
+        if (event.getView().getTitle().equalsIgnoreCase(Main.getInstance().getConfig().getString("BalloonsMenuName") + " (" + ((pages.get(player) / 45) + 1) + "/" + ((list.size() / 45) + 1)+")")) {
             event.setCancelled(true);
 
 
@@ -92,15 +112,13 @@ public class Inventorys implements Listener {
                     File file = new File(Main.getInstance().getDataFolder(), "config.yml");
                     YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-                    String[] number = inv.getItem(slot).getItemMeta().getDisplayName().split(" : ");
-
-                    String permission = config.getString("Balloons." + number[1] + ".permission");
+                    String permission = config.getString("Balloons." + inv.getItem(slot).getItemMeta().getDisplayName().substring(2) + ".permission");
                     if (permission != null) {
                         if (player.hasPermission(permission)) {
                             if (SummonBallons.balloons.containsKey(player)) {
                                 SummonBallons.removeBalloon(player);
                             }
-                            SummonBallons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + number[1] + ".head")));
+                            SummonBallons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + inv.getItem(slot).getItemMeta().getDisplayName().substring(2) + ".head")));
                             player.closeInventory();
                         }
                     }
@@ -112,30 +130,12 @@ public class Inventorys implements Listener {
                 }
 
                 if (slot == 48) {
-                    File file = new File(Main.getInstance().getDataFolder(), "config.yml");
-                    YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-                    int ballons = 0;
-                    ArrayList<String> list = new ArrayList<>();
-                    ConfigurationSection cs = config.getConfigurationSection("Balloons");
-                    for (String key : cs.getKeys(false)) {
-                        list.add(key);
-                        ballons++;
-                    }
-                    inventory(player, ballons , pages.get(player) - 45, list);
+                    inventory(player ,pages.get(player) - 45);
                 }
                 if (slot == 50) {
-                    File file = new File(Main.getInstance().getDataFolder(), "config.yml");
-                    YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-                    int ballons = 0;
-                    ArrayList<String> list = new ArrayList<>();
-                    ConfigurationSection cs = config.getConfigurationSection("Balloons");
-                    for (String key : cs.getKeys(false)) {
-                        list.add(key);
-                        ballons++;
-                    }
-                    inventory(player, ballons , pages.get(player) + 45, list);
+                    inventory(player, pages.get(player) + 45);
                 }
             }
         }

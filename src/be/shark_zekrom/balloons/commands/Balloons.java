@@ -36,19 +36,8 @@ public class Balloons implements CommandExecutor {
                 }
             }
             if (args[0].equalsIgnoreCase("inventory")) {
-                File file = new File(Main.getInstance().getDataFolder(), "config.yml");
-                YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-                int ballons = 0;
-                ArrayList<String> list = new ArrayList<>();
-
-                ConfigurationSection cs = config.getConfigurationSection("Balloons");
-                for (String key : cs.getKeys(false)) {
-                    list.add(key);
-                    ballons++;
-                }
-
-                Inventorys.inventory(player, ballons, 0, list);
+                Inventorys.inventory(player, 0);
 
             }
         } else if (args.length > 1) {

@@ -161,8 +161,6 @@ public class Menu implements Listener {
                         File file = new File(Main.getInstance().getDataFolder(), "config.yml");
                         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-                        Bukkit.broadcastMessage((playerlist.get(player).get(slot + pages.get(player))));
-
                         if (SummonBallons.balloons.containsKey(player)) {
                             SummonBallons.removeBalloon(player);
                         }

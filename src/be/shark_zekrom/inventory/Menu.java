@@ -1,9 +1,9 @@
-package be.shark_zekrom.balloons.inventory;
+package be.shark_zekrom.inventory;
 
-import be.shark_zekrom.balloons.Main;
-import be.shark_zekrom.balloons.utils.GetSkull;
-import be.shark_zekrom.balloons.utils.InventoryItems;
-import be.shark_zekrom.balloons.utils.SummonBalloons;
+import be.shark_zekrom.Main;
+import be.shark_zekrom.utils.GetSkull;
+import be.shark_zekrom.utils.InventoryItems;
+import be.shark_zekrom.utils.SummonBalloons;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;

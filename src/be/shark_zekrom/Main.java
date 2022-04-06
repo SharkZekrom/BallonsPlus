@@ -1,11 +1,12 @@
-package be.shark_zekrom.balloons;
+package be.shark_zekrom;
 
-import be.shark_zekrom.balloons.commands.Balloons;
-import be.shark_zekrom.balloons.inventory.Menu;
-import be.shark_zekrom.balloons.utils.Distance;
-import be.shark_zekrom.balloons.utils.GetSkull;
-import be.shark_zekrom.balloons.utils.Listener;
-import be.shark_zekrom.balloons.utils.SummonBalloons;
+import be.shark_zekrom.commands.Balloons;
+import be.shark_zekrom.inventory.Menu;
+import be.shark_zekrom.utils.Distance;
+import be.shark_zekrom.utils.GetSkull;
+import be.shark_zekrom.utils.Listener;
+import be.shark_zekrom.utils.SummonBalloons;
+import de.sprax2013.betterchairs.ChairManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;

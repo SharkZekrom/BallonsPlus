@@ -1,9 +1,9 @@
-package be.shark_zekrom.balloons.commands;
+package be.shark_zekrom.commands;
 
-import be.shark_zekrom.balloons.Main;
-import be.shark_zekrom.balloons.inventory.Menu;
-import be.shark_zekrom.balloons.utils.GetSkull;
-import be.shark_zekrom.balloons.utils.SummonBalloons;
+import be.shark_zekrom.Main;
+import be.shark_zekrom.inventory.Menu;
+import be.shark_zekrom.utils.GetSkull;
+import be.shark_zekrom.utils.SummonBalloons;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

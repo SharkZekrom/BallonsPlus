@@ -1,6 +1,6 @@
-package be.shark_zekrom.balloons.utils;
+package be.shark_zekrom.utils;
 
-import be.shark_zekrom.balloons.Main;
+import be.shark_zekrom.Main;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;

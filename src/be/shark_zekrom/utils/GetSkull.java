@@ -1,4 +1,4 @@
-package be.shark_zekrom.balloons.utils;
+package be.shark_zekrom.utils;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;

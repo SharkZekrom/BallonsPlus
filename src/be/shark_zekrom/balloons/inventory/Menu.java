@@ -3,7 +3,7 @@ package be.shark_zekrom.balloons.inventory;
 import be.shark_zekrom.balloons.Main;
 import be.shark_zekrom.balloons.utils.GetSkull;
 import be.shark_zekrom.balloons.utils.InventoryItems;
-import be.shark_zekrom.balloons.utils.SummonBallons;
+import be.shark_zekrom.balloons.utils.SummonBalloons;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -161,17 +161,19 @@ public class Menu implements Listener {
                         File file = new File(Main.getInstance().getDataFolder(), "config.yml");
                         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-                        if (SummonBallons.balloons.containsKey(player)) {
-                            SummonBallons.removeBalloon(player);
+                        if (SummonBalloons.balloons.containsKey(player)) {
+                            SummonBalloons.removeBalloon(player);
                         }
-                        SummonBallons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".head")));
+                        SummonBalloons.playerBalloons.put(player, (playerlist.get(player).get(slot + pages.get(player))));
+
+                        SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".head")));
                         player.closeInventory();
                     }
 
 
                     if (event.getCurrentItem().getType().equals(Material.BARRIER)) {
                         player.closeInventory();
-                        SummonBallons.removeBalloon(player);
+                        SummonBalloons.removeBalloon(player);
                     }
 
                     if (slot == 48) {
@@ -201,10 +203,11 @@ public class Menu implements Listener {
                                 String permission = config.getString("Balloons." + key + ".permission");
                                 if (permission != null) {
                                     if (player.hasPermission(permission)) {
-                                        if (SummonBallons.balloons.containsKey(player)) {
-                                            SummonBallons.removeBalloon(player);
+                                        if (SummonBalloons.balloons.containsKey(player)) {
+                                            SummonBalloons.removeBalloon(player);
                                         }
-                                        SummonBallons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + key + ".head")));
+                                        SummonBalloons.playerBalloons.put(player, key);
+                                        SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + key + ".head")));
                                         player.closeInventory();
                                     }
                                 }
@@ -219,7 +222,7 @@ public class Menu implements Listener {
 
                     if (event.getCurrentItem().getType().equals(Material.BARRIER)) {
                         player.closeInventory();
-                        SummonBallons.removeBalloon(player);
+                        SummonBalloons.removeBalloon(player);
                     }
 
                     if (slot == 48) {

@@ -1,14 +1,14 @@
 package be.shark_zekrom.balloons.utils;
 
-import be.shark_zekrom.balloons.Main;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 
-public class SummonBallons {
+public class SummonBalloons {
 
+    public static HashMap<Player, String> playerBalloons = new HashMap<>();
     public static HashMap<Player, Parrot> balloons = new HashMap<>();
     public static HashMap<Player, ArmorStand> as = new HashMap<>();
 
@@ -34,21 +34,21 @@ public class SummonBallons {
     }
 
     public static void removeBalloon(Player player) {
-        ArmorStand as = SummonBallons.as.get(player);
-        SummonBallons.as.remove(player);
+        ArmorStand as = SummonBalloons.as.get(player);
+        SummonBalloons.as.remove(player);
         as.remove();
 
-        Parrot parrot = SummonBallons.balloons.get(player);
-        SummonBallons.balloons.remove(player);
+        Parrot parrot = SummonBalloons.balloons.get(player);
+        SummonBalloons.balloons.remove(player);
         parrot.remove();
 
     }
 
     public static void removeAllBalloon() {
-        for (Parrot parrot : SummonBallons.balloons.values()) {
+        for (Parrot parrot : SummonBalloons.balloons.values()) {
             parrot.remove();
         }
-        for (ArmorStand as : SummonBallons.as.values()) {
+        for (ArmorStand as : SummonBalloons.as.values()) {
             as.remove();
         }
 

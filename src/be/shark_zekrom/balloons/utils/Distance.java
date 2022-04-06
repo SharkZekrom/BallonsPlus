@@ -24,7 +24,7 @@ public class Distance {
             //    }
             entity.getLocation().setDirection(player.getLocation().getDirection());
 
-            ArmorStand as = SummonBallons.as.get(player);
+            ArmorStand as = SummonBalloons.as.get(player);
             as.teleport(entity.getLocation().add(0, -1.3, 0));
             as.getLocation().setDirection(player.getLocation().getDirection());
         } else {

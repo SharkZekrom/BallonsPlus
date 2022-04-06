@@ -3,8 +3,9 @@ package be.shark_zekrom.balloons;
 import be.shark_zekrom.balloons.commands.Balloons;
 import be.shark_zekrom.balloons.inventory.Menu;
 import be.shark_zekrom.balloons.utils.Distance;
+import be.shark_zekrom.balloons.utils.GetSkull;
 import be.shark_zekrom.balloons.utils.Listener;
-import be.shark_zekrom.balloons.utils.SummonBallons;
+import be.shark_zekrom.balloons.utils.SummonBalloons;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -34,10 +35,22 @@ public class Main extends JavaPlugin {
 
         new BukkitRunnable() {
             public void run() {
-                for (Parrot parrot : SummonBallons.balloons.values()) {
-                   Distance.line(parrot, (parrot).getLeashHolder());
-               //   parrot.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 10, 0,false,false));
+                for (Player player : SummonBalloons.balloons.keySet()) {
+                    Parrot parrot = SummonBalloons.balloons.get(player);
 
+                    if (parrot.getLocation().distance(player.getLocation()) < 6D) {
+                        if ((parrot).isLeashed()) {
+                            Distance.line(parrot, (parrot).getLeashHolder());
+                        } else {
+                            SummonBalloons.removeBalloon(player);
+
+                        }
+                        //   parrot.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 10, 0,false,false));
+
+                    } else {
+                        SummonBalloons.removeBalloon(player);
+                        SummonBalloons.summonBalloon(player, GetSkull.createSkull(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".head")));
+                    }
                 }
             }
         }.runTaskTimer(Main.getInstance(), 0L, 2L);
@@ -57,10 +70,13 @@ public class Main extends JavaPlugin {
         config.addDefault("BalloonsMenuClickToSummon", "§6» §eClick to summon");
         config.addDefault("BalloonsMenuNoPermissionToSummon", "§cNo permission to summon");
 
-        config.addDefault("Balloons.shark_zekrom.permission", "Ballons+.shark_zekrom");
-        config.addDefault("Balloons.shark_zekrom.displayname", "§eshark_zekrom");
 
-        config.addDefault("Balloons.shark_zekrom.head", "ewogICJ0aW1lc3RhbXAiIDogMTYyNzA1NDA1Mjg5MCwKICAicHJvZmlsZUlkIiA6ICIzMzNhMjQ3ODk3MTE0MDA2YTE3ZDFmOTU4ZjhkMDZmMSIsCiAgInByb2ZpbGVOYW1lIiA6ICJzaGFya196ZWtyb20iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDBjNzAyODQyZTc0MDM4ODA0YzYzNDUwZTU4YzI4ZTgwOGJjNmFiY2I1M2EwZjI0NTRjN2FkMmRkMDUwNmFhMyIKICAgIH0KICB9Cn0=");
+        if (config.get("Balloons") == null) {
+            config.set("Balloons.shark_zekrom.permission", "Ballons+.shark_zekrom");
+            config.set("Balloons.shark_zekrom.displayname", "§eshark_zekrom");
+            config.set("Balloons.shark_zekrom.head", "ewogICJ0aW1lc3RhbXAiIDogMTYyNzA1NDA1Mjg5MCwKICAicHJvZmlsZUlkIiA6ICIzMzNhMjQ3ODk3MTE0MDA2YTE3ZDFmOTU4ZjhkMDZmMSIsCiAgInByb2ZpbGVOYW1lIiA6ICJzaGFya196ZWtyb20iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDBjNzAyODQyZTc0MDM4ODA0YzYzNDUwZTU4YzI4ZTgwOGJjNmFiY2I1M2EwZjI0NTRjN2FkMmRkMDUwNmFhMyIKICAgIH0KICB9Cn0=");
+
+        }
 
         config.options().copyDefaults(true);
         saveConfig();
@@ -77,7 +93,7 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        SummonBallons.removeAllBalloon();
+        SummonBalloons.removeAllBalloon();
         Bukkit.getLogger().info("Balloons+ disabled !");
 
     }

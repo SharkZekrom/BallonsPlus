@@ -9,6 +9,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerUnleashEntityEvent;
@@ -19,16 +20,6 @@ import java.util.HashSet;
 
 public class Listener implements org.bukkit.event.Listener {
 
-    public void onDamage(EntityDamageByEntityEvent event) {
-        Entity damager = event.getDamager();
-        Entity entity = event.getEntity();
-        if (SummonBallons.balloons.containsValue(entity)) {
-            Bukkit.broadcastMessage("TEST");
-            entity.setVelocity(damager.getLocation().getDirection().multiply(2.5D));
-            event.setCancelled(true);
-        }
-    }
-
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
         Entity entity = event.getEntity();
@@ -37,15 +28,6 @@ public class Listener implements org.bukkit.event.Listener {
         }
     }
 
-
-    @EventHandler
-    public void onUnleash(PlayerUnleashEntityEvent event) {
-        Player player = event.getPlayer();
-        Entity entity = event.getEntity();
-        if (SummonBallons.balloons.containsValue(entity)) {
-            SummonBallons.removeBalloon(player);
-        }
-    }
 
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
@@ -66,10 +48,10 @@ public class Listener implements org.bukkit.event.Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    SummonBallons.summonBalloon(player,item);
+                    SummonBallons.summonBalloon(player, item);
 
                 }
-            }.runTaskLater(Main.getInstance(),10L);
+            }.runTaskLater(Main.getInstance(), 10L);
 
         }
     }
@@ -96,20 +78,37 @@ public class Listener implements org.bukkit.event.Listener {
         Player player = event.getPlayer();
         if (SummonBallons.balloons.containsKey(player)) {
             event.setCancelled(true);
-
-
-
-            for (Entity entity : player.getWorld().getNearbyEntities(player.getTargetBlock(null, 50).getLocation(),0.5,0.5,0.5)) {
+            for (Entity entity : player.getWorld().getNearbyEntities(player.getTargetBlock(null, 50).getLocation(), 0.5, 0.5, 0.5)) {
                 Bukkit.broadcastMessage(entity.getType().toString());
                 if (entity instanceof LeashHitch) {
                     entity.remove();
 
                 }
             }
-
-
         }
     }
 
+    @EventHandler
+    public void onUnLeash(PlayerUnleashEntityEvent event) {
+        Player player = event.getPlayer();
+        if (event.getEntity() instanceof Parrot) {
+            Parrot parrot = (Parrot) event.getEntity();
+            if (SummonBallons.balloons.get(player).equals(parrot)) {
+                event.setCancelled(true);
+            }
+        }
+    }
 
+    @EventHandler
+    public void onInteract(PlayerInteractAtEntityEvent event) {
+        Player player = event.getPlayer();
+        Entity entity = event.getRightClicked();
+        if (entity instanceof ArmorStand) {
+            ArmorStand as = (ArmorStand) entity;
+            if (SummonBallons.as.get(player).equals(as)) {
+                event.setCancelled(true);
+            }
+        }
+    }
 }
+

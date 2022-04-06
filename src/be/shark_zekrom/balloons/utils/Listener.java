@@ -11,8 +11,12 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerUnleashEntityEvent;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
+import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.spigotmc.event.entity.EntityDismountEvent;
+import org.spigotmc.event.entity.EntityMountEvent;
 
 public class Listener implements org.bukkit.event.Listener {
 
@@ -106,5 +110,31 @@ public class Listener implements org.bukkit.event.Listener {
             }
         }
     }
+
+
+    @EventHandler
+    public void onMount(EntityMountEvent event) {
+
+        if (event.getEntity() instanceof Player) {
+            Player player = (Player) event.getEntity();
+            if (SummonBalloons.balloons.containsKey(player)) {
+                SummonBalloons.removeBalloon(player);
+
+            }
+        }
+    }
+
+    @EventHandler
+    public void onDismount(EntityDismountEvent event) {
+        if (event.getEntity() instanceof Player) {
+            Player player = (Player) event.getEntity();
+            if (SummonBalloons.playerBalloons.containsKey(player)) {
+                SummonBalloons.summonBalloon(player, GetSkull.createSkull(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".head")));
+            }
+        }
+    }
+
+
+
 }
 

@@ -161,11 +161,12 @@ public class Menu implements Listener {
                             YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
                             if (SummonBalloons.balloons.containsKey(player)) {
-                                SummonBalloons.removeBalloon(player);
+                                SummonBalloons.as.get(player).getEquipment().setHelmet(GetSkull.createSkull(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".head")));
+
+                            } else {
+                                SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".head")));
                             }
                             SummonBalloons.playerBalloons.put(player, (playerlist.get(player).get(slot + pages.get(player))));
-
-                            SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".head")));
                             player.closeInventory();
                         }
 
@@ -203,10 +204,12 @@ public class Menu implements Listener {
                                     if (permission != null) {
                                         if (player.hasPermission(permission)) {
                                             if (SummonBalloons.balloons.containsKey(player)) {
-                                                SummonBalloons.removeBalloon(player);
+                                                SummonBalloons.as.get(player).getEquipment().setHelmet(GetSkull.createSkull(config.getString("Balloons." + key + ".head")));
+                                            } else {
+                                                SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + key + ".head")));
+
                                             }
                                             SummonBalloons.playerBalloons.put(player, key);
-                                            SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + key + ".head")));
                                             player.closeInventory();
                                         }
                                     }
@@ -222,6 +225,7 @@ public class Menu implements Listener {
                         if (event.getCurrentItem().getType().equals(Material.BARRIER)) {
                             player.closeInventory();
                             SummonBalloons.removeBalloon(player);
+                            SummonBalloons.playerBalloons.remove(player);
                         }
 
                         if (slot == 48) {

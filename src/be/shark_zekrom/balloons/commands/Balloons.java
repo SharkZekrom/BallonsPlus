@@ -33,14 +33,19 @@ public class Balloons implements CommandExecutor {
             if (args[0].equalsIgnoreCase("remove")) {
                 if (SummonBalloons.balloons.containsKey(player)) {
                     SummonBalloons.removeBalloon(player);
+                    SummonBalloons.playerBalloons.remove(player);
+
                     player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("BalloonsRemoved"));
 
                 }
             }
             if (args[0].equalsIgnoreCase("inventory")) {
+                if (player.isInsideVehicle()) {
+                    player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("CantOpenInventory"));
 
-                Menu.inventory(player, 0);
-
+                } else {
+                    Menu.inventory(player, 0);
+                }
             }
             if (args[0].equalsIgnoreCase("reload")) {
                 ConfigurationSection cs = Main.getInstance().getConfig().getConfigurationSection("Balloons");
@@ -61,10 +66,12 @@ public class Balloons implements CommandExecutor {
                     if (permission != null) {
                         if (commandSender.hasPermission(permission)) {
                             if (SummonBalloons.balloons.containsKey(player)) {
-                                SummonBalloons.removeBalloon(player);
+
+                                SummonBalloons.as.get(player).getEquipment().setHelmet(GetSkull.createSkull(config.getString("Balloons." + args[1] + ".head")));
+                            } else {
+                                SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + args[1] + ".head")));
                             }
                             SummonBalloons.playerBalloons.put(player, args[1]);
-                            SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + args[1] + ".head")));
                             player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("BalloonsSummoned"));
 
                         } else {

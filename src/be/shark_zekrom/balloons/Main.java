@@ -41,11 +41,7 @@ public class Main extends JavaPlugin {
                     if (parrot.getLocation().distance(player.getLocation()) < 6D) {
                         if ((parrot).isLeashed()) {
                             Distance.line(parrot, (parrot).getLeashHolder());
-                        } else {
-                            SummonBalloons.removeBalloon(player);
-
                         }
-                        //   parrot.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 10, 0,false,false));
 
                     } else {
                         SummonBalloons.removeBalloon(player);
@@ -69,7 +65,7 @@ public class Main extends JavaPlugin {
         config.addDefault("BalloonsMenuRemove", "§cRemove");
         config.addDefault("BalloonsMenuClickToSummon", "§6» §eClick to summon");
         config.addDefault("BalloonsMenuNoPermissionToSummon", "§cNo permission to summon");
-
+        config.addDefault("CantOpenInventory", "§bYou can't open the inventory inside a vehicle.");
 
         if (config.get("Balloons") == null) {
             config.set("Balloons.shark_zekrom.permission", "Ballons+.shark_zekrom");

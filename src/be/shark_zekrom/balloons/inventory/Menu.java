@@ -24,8 +24,7 @@ public class Menu implements Listener {
 
     public static HashMap<Player, Integer> pages = new HashMap<>();
     public static ArrayList<String> list = new ArrayList<>();
-    public static HashMap<Player,ArrayList<String>> playerlist = new HashMap<>();
-
+    public static HashMap<Player, ArrayList<String>> playerlist = new HashMap<>();
 
 
     public static void inventory(Player player, int loop) {
@@ -53,7 +52,6 @@ public class Menu implements Listener {
             if (pages.get(player) > 0) {
                 InventoryItems.previous(inventory);
             }
-
 
 
             int slot = 0;
@@ -90,8 +88,6 @@ public class Menu implements Listener {
                 }
 
             }
-
-
 
 
         } else {
@@ -145,93 +141,97 @@ public class Menu implements Listener {
 
         }
     }
+
     @EventHandler
     private void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
 
         int slot = event.getSlot();
-        if (event.getView().getTitle().equalsIgnoreCase(Main.getInstance().getConfig().getString("BalloonsMenuName") + " (" + ((pages.get(player) / 45) + 1) + "/" + ((list.size() / 45) + 1)+")")) {
-            event.setCancelled(true);
 
-            if (Main.showOnlyBallonsWithPermission) {
-                if (event.getCurrentItem() != null) {
+        if (pages.get(player) != null) {
+            if (event.getView().getTitle().equalsIgnoreCase(Main.getInstance().getConfig().getString("BalloonsMenuName") + " (" + ((pages.get(player) / 45) + 1) + "/" + ((list.size() / 45) + 1) + ")")) {
+                event.setCancelled(true);
+
+                if (Main.showOnlyBallonsWithPermission) {
+                    if (event.getCurrentItem() != null) {
 
 
-                    if (event.getCurrentItem().getType().equals(Material.PLAYER_HEAD)) {
-                        File file = new File(Main.getInstance().getDataFolder(), "config.yml");
-                        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+                        if (event.getCurrentItem().getType().equals(Material.PLAYER_HEAD)) {
+                            File file = new File(Main.getInstance().getDataFolder(), "config.yml");
+                            YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-                        if (SummonBalloons.balloons.containsKey(player)) {
+                            if (SummonBalloons.balloons.containsKey(player)) {
+                                SummonBalloons.removeBalloon(player);
+                            }
+                            SummonBalloons.playerBalloons.put(player, (playerlist.get(player).get(slot + pages.get(player))));
+
+                            SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".head")));
+                            player.closeInventory();
+                        }
+
+
+                        if (event.getCurrentItem().getType().equals(Material.BARRIER)) {
+                            player.closeInventory();
                             SummonBalloons.removeBalloon(player);
                         }
-                        SummonBalloons.playerBalloons.put(player, (playerlist.get(player).get(slot + pages.get(player))));
 
-                        SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".head")));
-                        player.closeInventory();
+                        if (slot == 48) {
+
+                            inventory(player, pages.get(player) - 45);
+                        }
+                        if (slot == 50) {
+
+                            inventory(player, pages.get(player) + 45);
+                        }
                     }
 
 
-                    if (event.getCurrentItem().getType().equals(Material.BARRIER)) {
-                        player.closeInventory();
-                        SummonBalloons.removeBalloon(player);
-                    }
-
-                    if (slot == 48) {
-
-                        inventory(player, pages.get(player) - 45);
-                    }
-                    if (slot == 50) {
-
-                        inventory(player, pages.get(player) + 45);
-                    }
-                }
+                } else {
+                    if (event.getCurrentItem() != null) {
 
 
-            } else {
-                if (event.getCurrentItem() != null) {
+                        if (event.getCurrentItem().getType().equals(Material.PLAYER_HEAD)) {
+                            File file = new File(Main.getInstance().getDataFolder(), "config.yml");
+                            YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
+                            int ballons = 0;
+                            ConfigurationSection cs = config.getConfigurationSection("Balloons");
+                            for (String key : cs.getKeys(false)) {
+                                if (ballons == (slot + pages.get(player))) {
 
-                    if (event.getCurrentItem().getType().equals(Material.PLAYER_HEAD)) {
-                        File file = new File(Main.getInstance().getDataFolder(), "config.yml");
-                        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-
-                        int ballons = 0;
-                        ConfigurationSection cs = config.getConfigurationSection("Balloons");
-                        for (String key : cs.getKeys(false)) {
-                            if (ballons == (slot + pages.get(player))) {
-
-                                String permission = config.getString("Balloons." + key + ".permission");
-                                if (permission != null) {
-                                    if (player.hasPermission(permission)) {
-                                        if (SummonBalloons.balloons.containsKey(player)) {
-                                            SummonBalloons.removeBalloon(player);
+                                    String permission = config.getString("Balloons." + key + ".permission");
+                                    if (permission != null) {
+                                        if (player.hasPermission(permission)) {
+                                            if (SummonBalloons.balloons.containsKey(player)) {
+                                                SummonBalloons.removeBalloon(player);
+                                            }
+                                            SummonBalloons.playerBalloons.put(player, key);
+                                            SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + key + ".head")));
+                                            player.closeInventory();
                                         }
-                                        SummonBalloons.playerBalloons.put(player, key);
-                                        SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + key + ".head")));
-                                        player.closeInventory();
                                     }
-                                }
 
-                                return;
+                                    return;
+                                }
+                                ballons++;
                             }
-                            ballons++;
+
+
                         }
 
+                        if (event.getCurrentItem().getType().equals(Material.BARRIER)) {
+                            player.closeInventory();
+                            SummonBalloons.removeBalloon(player);
+                        }
 
-                    }
+                        if (slot == 48) {
 
-                    if (event.getCurrentItem().getType().equals(Material.BARRIER)) {
-                        player.closeInventory();
-                        SummonBalloons.removeBalloon(player);
-                    }
+                            inventory(player, pages.get(player) - 45);
+                        }
+                        if (slot == 50) {
 
-                    if (slot == 48) {
-
-                        inventory(player, pages.get(player) - 45);
-                    }
-                    if (slot == 50) {
-
-                        inventory(player, pages.get(player) + 45);
+                            inventory(player, pages.get(player) + 45);
+                        }
                     }
                 }
             }

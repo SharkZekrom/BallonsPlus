@@ -109,9 +109,20 @@ public class Menu implements Listener {
             int slot = 0;
             for (int i = 0; i < 45; i++) {
                 if (list.size() > i + loop) {
+                    ItemStack item;
+                    ItemMeta itemmeta;
 
-                    ItemStack item = new ItemStack(GetSkull.createSkull(config.getString("Balloons." + list.get(i + loop) + ".head")));
-                    ItemMeta itemmeta = item.getItemMeta();
+                    if (config.getString("Balloons." + list.get(i + loop) + ".item") != null) {
+                        item = new ItemStack(Material.valueOf(config.getString("Balloons." + list.get(i + loop) + ".item")));
+                        itemmeta = item.getItemMeta();
+                        itemmeta.setCustomModelData(config.getInt("Balloons." + list.get(i + loop) + ".custommodeldata"));
+                    } else {
+                        item = new ItemStack(GetSkull.createSkull(config.getString("Balloons." + list.get(i + loop) + ".head")));
+                        itemmeta = item.getItemMeta();
+
+
+                    }
+
                     if (config.getString("Balloons." + list.get(i + loop) + ".displayname") != null) {
                         itemmeta.setDisplayName(config.getString("Balloons." + list.get(i + loop) + ".displayname"));
                     } else {
@@ -136,6 +147,7 @@ public class Menu implements Listener {
                         return;
                     }
                 }
+
 
             }
 

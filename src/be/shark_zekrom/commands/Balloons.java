@@ -5,12 +5,15 @@ import be.shark_zekrom.inventory.Menu;
 import be.shark_zekrom.utils.GetSkull;
 import be.shark_zekrom.utils.SummonBalloons;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
 
@@ -63,30 +66,37 @@ public class Balloons implements CommandExecutor {
                 if (config.getString("Balloons." + args[1]) != null) {
 
                     String permission = config.getString("Balloons." + args[1] + ".permission");
-                    if (permission != null) {
-                        if (commandSender.hasPermission(permission)) {
-                            if (SummonBalloons.balloons.containsKey(player)) {
-
+                    if (commandSender.hasPermission(permission)) {
+                        if (SummonBalloons.balloons.containsKey(player)) {
+                            if (config.getString("Balloons." + args[1] + ".item") != null) {
+                                ItemStack itemStack = new ItemStack(Material.valueOf(config.getString("Balloons." + args[1] + ".item")));
+                                ItemMeta itemMeta = itemStack.getItemMeta();
+                                itemMeta.setCustomModelData(config.getInt("Balloons." + args[1] + ".custommodeldata"));
+                                itemStack.setItemMeta(itemMeta);
+                                SummonBalloons.as.get(player).getEquipment().setHelmet(itemStack);
+                            } else {
                                 SummonBalloons.as.get(player).getEquipment().setHelmet(GetSkull.createSkull(config.getString("Balloons." + args[1] + ".head")));
+
+                            }
+                        } else {
+                            if (config.getString("Balloons." + args[1] + ".item") != null) {
+                                ItemStack itemStack = new ItemStack(Material.valueOf(config.getString("Balloons." + args[1] + ".item")));
+                                ItemMeta itemMeta = itemStack.getItemMeta();
+                                itemMeta.setCustomModelData(config.getInt("Balloons." + args[1] + ".custommodeldata"));
+                                itemStack.setItemMeta(itemMeta);
+                                SummonBalloons.summonBalloon(player, itemStack);
+
                             } else {
                                 SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + args[1] + ".head")));
-                            }
-                            SummonBalloons.playerBalloons.put(player, args[1]);
-                            player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("BalloonsSummoned"));
 
-                        } else {
-                            player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("NoBalloonsPermission"));
-                        }
-                    } else {
-                        if (SummonBalloons.balloons.containsKey(player)) {
-                            SummonBalloons.removeBalloon(player);
-                            player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("BalloonsRemoved"));
+                            }
 
                         }
                         SummonBalloons.playerBalloons.put(player, args[1]);
-                        SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + args[1] + ".head")));
                         player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("BalloonsSummoned"));
 
+                    } else {
+                        player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("NoBalloonsPermission"));
                     }
                 } else {
                     player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("NoBalloonsFound"));

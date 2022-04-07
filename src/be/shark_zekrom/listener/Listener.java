@@ -1,7 +1,10 @@
-package be.shark_zekrom.utils;
+package be.shark_zekrom.listener;
 
 import be.shark_zekrom.Main;
+import be.shark_zekrom.utils.GetSkull;
+import be.shark_zekrom.utils.SummonBalloons;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -12,6 +15,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerUnleashEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.spigotmc.event.entity.EntityDismountEvent;
 import org.spigotmc.event.entity.EntityMountEvent;
@@ -126,8 +130,31 @@ public class Listener implements org.bukkit.event.Listener {
     public void onDismount(EntityDismountEvent event) {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-            if (SummonBalloons.playerBalloons.containsKey(player)) {
-                SummonBalloons.summonBalloon(player, GetSkull.createSkull(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".head")));
+
+            if (SummonBalloons.balloons.containsKey(player)) {
+                if (Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".item") != null) {
+                    ItemStack itemStack = new ItemStack(Material.valueOf(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".item")));
+                    ItemMeta itemMeta = itemStack.getItemMeta();
+                    itemMeta.setCustomModelData(Main.getInstance().getConfig().getInt("Balloons." + SummonBalloons.playerBalloons.get(player) + ".custommodeldata"));
+                    itemStack.setItemMeta(itemMeta);
+                    SummonBalloons.as.get(player).getEquipment().setHelmet(itemStack);
+                } else {
+                    SummonBalloons.as.get(player).getEquipment().setHelmet(GetSkull.createSkull(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".head")));
+
+                }
+            } else {
+                if (Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".item") != null) {
+                    ItemStack itemStack = new ItemStack(Material.valueOf(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".item")));
+                    ItemMeta itemMeta = itemStack.getItemMeta();
+                    itemMeta.setCustomModelData(Main.getInstance().getConfig().getInt("Balloons." + SummonBalloons.playerBalloons.get(player) + ".custommodeldata"));
+                    itemStack.setItemMeta(itemMeta);
+                    SummonBalloons.summonBalloon(player, itemStack);
+
+                } else {
+                    SummonBalloons.summonBalloon(player, GetSkull.createSkull(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".head")));
+
+                }
+
             }
         }
     }

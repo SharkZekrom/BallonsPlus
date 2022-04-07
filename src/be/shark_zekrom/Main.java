@@ -4,13 +4,15 @@ import be.shark_zekrom.commands.Balloons;
 import be.shark_zekrom.inventory.Menu;
 import be.shark_zekrom.utils.Distance;
 import be.shark_zekrom.utils.GetSkull;
-import be.shark_zekrom.utils.Listener;
+import be.shark_zekrom.listener.Listener;
 import be.shark_zekrom.utils.SummonBalloons;
-import de.sprax2013.betterchairs.ChairManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -46,7 +48,18 @@ public class Main extends JavaPlugin {
 
                     } else {
                         SummonBalloons.removeBalloon(player);
-                        SummonBalloons.summonBalloon(player, GetSkull.createSkull(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".head")));
+
+                        if (Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".item") != null) {
+                            ItemStack itemStack = new ItemStack(Material.valueOf(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".item")));
+                            ItemMeta itemMeta = itemStack.getItemMeta();
+                            itemMeta.setCustomModelData(Main.getInstance().getConfig().getInt("Balloons." + SummonBalloons.playerBalloons.get(player) + ".custommodeldata"));
+                            itemStack.setItemMeta(itemMeta);
+                            SummonBalloons.summonBalloon(player, itemStack);
+
+                        } else {
+                            SummonBalloons.summonBalloon(player, GetSkull.createSkull(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".head")));
+
+                        }
                     }
                 }
             }

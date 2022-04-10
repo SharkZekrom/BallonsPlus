@@ -2,7 +2,7 @@ name: BalloonsPlus
 main: be.shark_zekrom.Main
 version: 1.6
 api-version: 1.13
-description: Balloons
+description: Create a balloon
 commands:
   balloons+:
     aliases:

@@ -69,6 +69,7 @@ public class Main extends JavaPlugin {
         FileConfiguration config = getConfig();
 
         config.addDefault("ShowOnlyBalloonsWithPermission", false);
+        config.addDefault("ShowParticlesBalloonsOnRemove", true);
         config.addDefault("NoBalloonsFound", "§bNo balloons found with this name.");
         config.addDefault("NoBalloonsPermission", "§bYou do not have permission to use this balloons.");
         config.addDefault("BalloonsRemoved", "§bBalloons removed.");
@@ -84,7 +85,12 @@ public class Main extends JavaPlugin {
         if (config.get("Balloons") == null) {
             config.set("Balloons.shark_zekrom.permission", "Ballons+.shark_zekrom");
             config.set("Balloons.shark_zekrom.displayname", "§eshark_zekrom");
-            config.set("Balloons.shark_zekrom.head", "ewogICJ0aW1lc3RhbXAiIDogMTYyNzA1NDA1Mjg5MCwKICAicHJvZmlsZUlkIiA6ICIzMzNhMjQ3ODk3MTE0MDA2YTE3ZDFmOTU4ZjhkMDZmMSIsCiAgInByb2ZpbGVOYW1lIiA6ICJzaGFya196ZWtyb20iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDBjNzAyODQyZTc0MDM4ODA0YzYzNDUwZTU4YzI4ZTgwOGJjNmFiY2I1M2EwZjI0NTRjN2FkMmRkMDUwNmFhMyIKICAgIH0KICB9Cn0=");
+            config.set("Balloons.shark_zekrom.head", "ewogICJ0aW1lc3RhbXAiIDogMTYyNzA1    NDA1Mjg5MCwKICAicHJvZmlsZUlkIiA6ICIzMzNhMjQ3ODk3MTE0MDA2YTE3ZDFmOTU4ZjhkMDZmMSIsCiAgInByb2ZpbGVOYW1lIiA6ICJzaGFya196ZWtyb20iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDBjNzAyODQyZTc0MDM4ODA0YzYzNDUwZTU4YzI4ZTgwOGJjNmFiY2I1M2EwZjI0NTRjN2FkMmRkMDUwNmFhMyIKICAgIH0KICB9Cn0=");
+
+            config.set("Balloons.item.permission", "Ballons+.item");
+            config.set("Balloons.item.item", "DIAMOND_HOE");
+            config.set("Balloons.item.custommodeldata", 1);
+            config.set("Balloons.item.displayname", "§eitem");
 
         }
 

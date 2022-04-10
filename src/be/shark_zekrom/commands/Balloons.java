@@ -51,6 +51,7 @@ public class Balloons implements CommandExecutor {
                 }
             }
             if (args[0].equalsIgnoreCase("reload")) {
+                Menu.list.clear();
                 ConfigurationSection cs = Main.getInstance().getConfig().getConfigurationSection("Balloons");
                 Menu.list.addAll(cs.getKeys(false));
 

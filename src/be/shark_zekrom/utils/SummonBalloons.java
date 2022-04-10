@@ -1,6 +1,8 @@
 package be.shark_zekrom.utils;
 
+import be.shark_zekrom.Main;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 
@@ -35,6 +37,10 @@ public class SummonBalloons {
 
     public static void removeBalloon(Player player) {
         ArmorStand as = SummonBalloons.as.get(player);
+
+        if (Main.getInstance().getConfig().getBoolean("ShowParticlesBalloonsOnRemove")) {
+            as.getWorld().spawnParticle(Particle.CLOUD, as.getLocation().add(0, 2, 0), 5, 0.1, 0.1, 0.1, 0.1);
+        }
         SummonBalloons.as.remove(player);
         as.remove();
 
@@ -49,6 +55,9 @@ public class SummonBalloons {
             parrot.remove();
         }
         for (ArmorStand as : SummonBalloons.as.values()) {
+            if (Main.getInstance().getConfig().getBoolean("ShowParticlesBalloonsOnRemove")) {
+                as.getWorld().spawnParticle(Particle.CLOUD, as.getLocation().add(0, 2, 0), 5, 0.1, 0.1, 0.1, 0.1);
+            }
             as.remove();
         }
 

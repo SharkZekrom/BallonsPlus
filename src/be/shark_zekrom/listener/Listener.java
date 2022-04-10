@@ -74,14 +74,12 @@ public class Listener implements org.bukkit.event.Listener {
         }
     }
 
-
     @EventHandler
     public void onLeash(PlayerLeashEntityEvent event) {
         Player player = event.getPlayer();
         if (SummonBalloons.balloons.containsKey(player)) {
             event.setCancelled(true);
             for (Entity entity : player.getWorld().getNearbyEntities(player.getTargetBlock(null, 50).getLocation(), 0.5, 0.5, 0.5)) {
-                Bukkit.broadcastMessage(entity.getType().toString());
                 if (entity instanceof LeashHitch) {
                     entity.remove();
 
@@ -130,6 +128,7 @@ public class Listener implements org.bukkit.event.Listener {
     public void onDismount(EntityDismountEvent event) {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
+
 
             if (SummonBalloons.balloons.containsKey(player)) {
                 if (Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".item") != null) {

@@ -8,6 +8,7 @@ import be.shark_zekrom.listener.Listener;
 import be.shark_zekrom.utils.SummonBalloons;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
@@ -34,6 +35,23 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new Listener(), this);
         pm.registerEvents(new Menu(), this);
 
+        for (World world : Bukkit.getWorlds()) {
+        for (Entity entity : world.getEntities()) {
+            if (entity instanceof Parrot) {
+                Parrot parrot = (Parrot) entity;
+                if (parrot.getScoreboardTags().contains("Balloons+")) {
+                    parrot.remove();
+                }
+            }
+            if (entity instanceof ArmorStand) {
+                ArmorStand armorStand = (ArmorStand) entity;
+                if (armorStand.getScoreboardTags().contains("Balloons+")) {
+                    armorStand.remove();
+                }
+            }
+
+        }
+        }
         this.getCommand("balloons+").setExecutor(new Balloons());
 
         new BukkitRunnable() {

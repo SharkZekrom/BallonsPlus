@@ -19,12 +19,14 @@ public class SummonBalloons {
         Parrot parrot  = (Parrot) player.getWorld().spawnEntity(player.getLocation().add(0,2,0), EntityType.PARROT);
         parrot.setInvisible(true);
         parrot.setSilent(true);
+        parrot.addScoreboardTag("Balloons+");
 
         balloons.put(player, parrot);
         parrot.setLeashHolder(player);
 
         Location loc = player.getLocation().add(0,2,0);
         ArmorStand as1 = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
+        as1.addScoreboardTag("Balloons+");
         as1.setVisible(false);
         as1.setCustomNameVisible(false);
         as1.setGravity(false);

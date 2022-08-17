@@ -4,18 +4,21 @@ import be.shark_zekrom.Main;
 import be.shark_zekrom.inventory.Menu;
 import be.shark_zekrom.utils.GetSkull;
 import be.shark_zekrom.utils.SummonBalloons;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
+import java.io.IOException;
 
 public class Balloons implements CommandExecutor {
 
@@ -51,12 +54,24 @@ public class Balloons implements CommandExecutor {
                 }
             }
             if (args[0].equalsIgnoreCase("reload")) {
-                Menu.list.clear();
-                ConfigurationSection cs = Main.getInstance().getConfig().getConfigurationSection("Balloons");
-                Menu.list.addAll(cs.getKeys(false));
 
-                Main.showOnlyBallonsWithPermission = Main.getInstance().getConfig().getBoolean("ShowOnlyBalloonsWithPermission");
-                player.sendMessage("§b[Balloons+] reloaded.");
+
+                try {
+                    Main.getInstance().getConfig().load(new File(Main.getInstance().getDataFolder(), "config.yml"));
+
+
+                    Menu.list.clear();
+                    ConfigurationSection cs = Main.getInstance().getConfig().getConfigurationSection("Balloons");
+                    Menu.list.addAll(cs.getKeys(false));
+
+                    Main.showOnlyBallonsWithPermission = Main.getInstance().getConfig().getBoolean("ShowOnlyBalloonsWithPermission");
+                    player.sendMessage("§b[Balloons+] reloaded.");
+
+                } catch (IOException | InvalidConfigurationException e) {
+                    throw new RuntimeException(e);
+                }
+
+
 
             }
         } else if (args.length > 1) {

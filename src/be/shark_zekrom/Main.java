@@ -21,6 +21,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class Main extends JavaPlugin {
 
     private static Main instance;
+
     public static Main getInstance() {
         return instance;
     }
@@ -36,21 +37,21 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new Menu(), this);
 
         for (World world : Bukkit.getWorlds()) {
-        for (Entity entity : world.getEntities()) {
-            if (entity instanceof Parrot) {
-                Parrot parrot = (Parrot) entity;
-                if (parrot.getScoreboardTags().contains("Balloons+")) {
-                    parrot.remove();
+            for (Entity entity : world.getEntities()) {
+                if (entity instanceof Parrot) {
+                    Parrot parrot = (Parrot) entity;
+                    if (parrot.getScoreboardTags().contains("Balloons+")) {
+                        parrot.remove();
+                    }
                 }
-            }
-            if (entity instanceof ArmorStand) {
-                ArmorStand armorStand = (ArmorStand) entity;
-                if (armorStand.getScoreboardTags().contains("Balloons+")) {
-                    armorStand.remove();
+                if (entity instanceof ArmorStand) {
+                    ArmorStand armorStand = (ArmorStand) entity;
+                    if (armorStand.getScoreboardTags().contains("Balloons+")) {
+                        armorStand.remove();
+                    }
                 }
-            }
 
-        }
+            }
         }
         this.getCommand("balloons+").setExecutor(new Balloons());
 

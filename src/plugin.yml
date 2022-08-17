@@ -8,4 +8,5 @@ commands:
     aliases:
       - ballons
       - balloons
+      - bal
     description: balloons

@@ -8,10 +8,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -25,6 +27,9 @@ public class Menu implements Listener {
     public static HashMap<Player, Integer> pages = new HashMap<>();
     public static ArrayList<String> list = new ArrayList<>();
     public static HashMap<Player, ArrayList<String>> playerlist = new HashMap<>();
+
+    public static HashMap<Player, String> playerIdEditing = new HashMap<>();
+
 
 
     public static void inventory(Player player, int loop) {
@@ -163,17 +168,58 @@ public class Menu implements Listener {
         }
     }
 
+    public static void editInventory(Player player, String id, ItemStack balloon) {
+        Inventory inventory = Bukkit.createInventory(null, InventoryType.HOPPER,"Balloon Editing");
+        player.openInventory(inventory);
+
+        for (int i = 0; i < 4; i++) {
+            ItemStack item = new ItemStack(Material.BLUE_STAINED_GLASS_PANE, 1);
+            inventory.setItem(i, item);
+
+        }
+
+        ItemStack item = new ItemStack(Material.GREEN_STAINED_GLASS_PANE, 1);
+        inventory.setItem(4, item);
+
+        ItemMeta itemMeta = balloon.getItemMeta();
+        itemMeta.setLore(null);
+        balloon.setItemMeta(itemMeta);
+        inventory.setItem(2, balloon);
+
+
+
+
+        playerIdEditing.put(player, id);
+    }
+
+
     @EventHandler
     private void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
 
         int slot = event.getSlot();
 
+        if (event.getView().getTitle().equalsIgnoreCase("Balloon Editing")) {
+            if (slot == 0 || slot == 1 || slot == 3) {
+                event.setCancelled(true);
+            }
+
+            if (slot == 4) {
+                event.setCancelled(true);
+                if (event.getView().getTopInventory().getItem(2) != null) {
+                    player.closeInventory();
+                }
+            }
+
+        }
+
+
         if (pages.get(player) != null) {
             if (event.getView().getTitle().equalsIgnoreCase(Main.getInstance().getConfig().getString("BalloonsMenuName") + " (" + ((pages.get(player) / 45) + 1) + "/" + ((list.size() / 45) + 1) + ")")) {
                 event.setCancelled(true);
 
                 if (Main.showOnlyBallonsWithPermission) {
+
                     if (event.getCurrentItem() != null) {
 
 
@@ -181,30 +227,35 @@ public class Menu implements Listener {
                             File file = new File(Main.getInstance().getDataFolder(), "config.yml");
                             YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-                            if (SummonBalloons.balloons.containsKey(player)) {
-                                if (config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".item") != null) {
-                                    ItemStack itemStack = new ItemStack(Material.valueOf(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".item")));
-                                    ItemMeta itemMeta = itemStack.getItemMeta();
-                                    itemMeta.setCustomModelData(config.getInt("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".custommodeldata"));
-                                    itemStack.setItemMeta(itemMeta);
-                                    SummonBalloons.as.get(player).getEquipment().setHelmet(itemStack);
-                                } else {
-                                    SummonBalloons.as.get(player).getEquipment().setHelmet(GetSkull.createSkull(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".head")));
-                                }
+                            Bukkit.broadcastMessage(playerlist.get(player).get(slot + pages.get(player)));
+                            if (event.isRightClick()) {
+                                editInventory(player, playerlist.get(player).get(slot + pages.get(player)), event.getCurrentItem());
                             } else {
-                                if (config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".item") != null) {
-                                    ItemStack itemStack = new ItemStack(Material.valueOf(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".item")));
-                                    ItemMeta itemMeta = itemStack.getItemMeta();
-                                    itemMeta.setCustomModelData(config.getInt("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".custommodeldata"));
-                                    itemStack.setItemMeta(itemMeta);
-                                    SummonBalloons.summonBalloon(player, itemStack);
-
+                                if (SummonBalloons.balloons.containsKey(player)) {
+                                    if (config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".item") != null) {
+                                        ItemStack itemStack = new ItemStack(Material.valueOf(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".item")));
+                                        ItemMeta itemMeta = itemStack.getItemMeta();
+                                        itemMeta.setCustomModelData(config.getInt("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".custommodeldata"));
+                                        itemStack.setItemMeta(itemMeta);
+                                        SummonBalloons.as.get(player).getEquipment().setHelmet(itemStack);
+                                    } else {
+                                        SummonBalloons.as.get(player).getEquipment().setHelmet(GetSkull.createSkull(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".head")));
+                                    }
                                 } else {
-                                    SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".head")));
+                                    if (config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".item") != null) {
+                                        ItemStack itemStack = new ItemStack(Material.valueOf(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".item")));
+                                        ItemMeta itemMeta = itemStack.getItemMeta();
+                                        itemMeta.setCustomModelData(config.getInt("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".custommodeldata"));
+                                        itemStack.setItemMeta(itemMeta);
+                                        SummonBalloons.summonBalloon(player, itemStack);
+
+                                    } else {
+                                        SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".head")));
+                                    }
                                 }
+                                SummonBalloons.playerBalloons.put(player, (playerlist.get(player).get(slot + pages.get(player))));
+                                player.closeInventory();
                             }
-                            SummonBalloons.playerBalloons.put(player, (playerlist.get(player).get(slot + pages.get(player))));
-                            player.closeInventory();
                         }
 
 
@@ -240,8 +291,10 @@ public class Menu implements Listener {
                                     String permission = config.getString("Balloons." + key + ".permission");
                                     if (permission != null) {
                                         if (player.hasPermission(permission)) {
+                                            Bukkit.broadcastMessage(key);
 
                                             if (SummonBalloons.balloons.containsKey(player)) {
+
                                                 if (config.getString("Balloons." + key + ".item") != null) {
                                                     ItemStack itemStack = new ItemStack(Material.valueOf(config.getString("Balloons." + key + ".item")));
                                                     ItemMeta itemMeta = itemStack.getItemMeta();

@@ -19,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -194,7 +195,7 @@ public class Menu implements Listener {
 
 
     @EventHandler
-    private void onInventoryClick(InventoryClickEvent event) {
+    private void onInventoryClick(InventoryClickEvent event) throws IOException {
         Player player = (Player) event.getWhoClicked();
 
         int slot = event.getSlot();
@@ -208,6 +209,13 @@ public class Menu implements Listener {
                 event.setCancelled(true);
                 if (event.getView().getTopInventory().getItem(2) != null) {
                     player.closeInventory();
+                    File file = new File(Main.getInstance().getDataFolder(), "config.yml");
+                    YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+
+                    String displayname = event.getInventory().getItem(2).getItemMeta().getDisplayName();
+
+                    config.set("Balloons." + playerIdEditing.get(player), null);
+                    config.save(file);
                 }
             }
 

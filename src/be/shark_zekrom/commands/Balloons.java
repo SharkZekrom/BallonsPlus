@@ -2,9 +2,8 @@ package be.shark_zekrom.commands;
 
 import be.shark_zekrom.Main;
 import be.shark_zekrom.inventory.Menu;
-import be.shark_zekrom.utils.Skull;
+import be.shark_zekrom.utils.Skulls;
 import be.shark_zekrom.utils.SummonBalloons;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -76,7 +75,7 @@ public class Balloons implements CommandExecutor {
                                 itemStack.setItemMeta(itemMeta);
                                 SummonBalloons.as.get(player).getEquipment().setHelmet(itemStack);
                             } else {
-                                SummonBalloons.as.get(player).getEquipment().setHelmet(Skull.createSkull(config.getString("Balloons." + args[1] + ".head")));
+                                SummonBalloons.as.get(player).getEquipment().setHelmet(Skulls.createSkull(config.getString("Balloons." + args[1] + ".head")));
 
                             }
                         } else {
@@ -88,7 +87,7 @@ public class Balloons implements CommandExecutor {
                                 SummonBalloons.summonBalloon(player, itemStack);
 
                             } else {
-                                SummonBalloons.summonBalloon(player, Skull.createSkull(config.getString("Balloons." + args[1] + ".head")));
+                                SummonBalloons.summonBalloon(player, Skulls.createSkull(config.getString("Balloons." + args[1] + ".head")));
 
                             }
 

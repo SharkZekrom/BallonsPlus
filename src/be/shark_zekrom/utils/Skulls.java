@@ -3,13 +3,13 @@ package be.shark_zekrom.utils;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.UUID;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-public class Skull {
+public class Skulls {
 
     public static ItemStack createSkull(String url) {
         ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (short) 3);
@@ -32,16 +32,17 @@ public class Skull {
         return head;
     }
 
-    public static String getSkull(ItemStack head) {
-        String texture;
+    public static String getSkull(ItemStack head) throws NoSuchFieldException, IllegalAccessException {
 
         SkullMeta headMeta = (SkullMeta) head.getItemMeta();
-        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
 
-        texture = profile.getProperties().get("textures").toString();
+        Field profileField = headMeta.getClass().getDeclaredField("profile");
+        profileField.setAccessible(true);
+        GameProfile profile = (GameProfile) profileField.get(headMeta);
+        Collection<Property> textures = profile.getProperties().get("textures");
 
 
-        return texture;
+        return textures.iterator().next().getValue();
     }
 
 }

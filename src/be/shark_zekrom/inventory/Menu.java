@@ -1,7 +1,8 @@
 package be.shark_zekrom.inventory;
 
 import be.shark_zekrom.Main;
-import be.shark_zekrom.utils.GetSkull;
+import be.shark_zekrom.commands.Balloons;
+import be.shark_zekrom.utils.Skull;
 import be.shark_zekrom.utils.InventoryItems;
 import be.shark_zekrom.utils.SummonBalloons;
 import org.bukkit.Bukkit;
@@ -71,7 +72,7 @@ public class Menu implements Listener {
                             itemmeta = item.getItemMeta();
                             itemmeta.setCustomModelData(config.getInt("Balloons." + list.get(i + loop) + ".custommodeldata"));
                         } else {
-                            item = new ItemStack(GetSkull.createSkull(config.getString("Balloons." + list.get(i + loop) + ".head")));
+                            item = new ItemStack(Skull.createSkull(config.getString("Balloons." + list.get(i + loop) + ".head")));
                             itemmeta = item.getItemMeta();
 
                         }
@@ -132,7 +133,7 @@ public class Menu implements Listener {
                         itemmeta = item.getItemMeta();
                         itemmeta.setCustomModelData(config.getInt("Balloons." + list.get(i + loop) + ".custommodeldata"));
                     } else {
-                        item = new ItemStack(GetSkull.createSkull(config.getString("Balloons." + list.get(i + loop) + ".head")));
+                        item = new ItemStack(Skull.createSkull(config.getString("Balloons." + list.get(i + loop) + ".head")));
                         itemmeta = item.getItemMeta();
 
 
@@ -214,8 +215,35 @@ public class Menu implements Listener {
 
                     String displayname = event.getInventory().getItem(2).getItemMeta().getDisplayName();
 
-                    config.set("Balloons." + playerIdEditing.get(player), null);
+                    config.set("Balloons." + playerIdEditing.get(player) + ".item", null);
+                    config.set("Balloons." + playerIdEditing.get(player) + ".displayname", null);
+                    config.set("Balloons." + playerIdEditing.get(player) + ".custommodeldata", null);
+                    config.set("Balloons." + playerIdEditing.get(player) + ".head", null);
+
+
+
+                    if (event.getInventory().getItem(2).getType() == Material.PLAYER_HEAD) {
+                        Bukkit.broadcastMessage(Skull.getSkull(event.getInventory().getItem(2)));
+
+
+                    } else {
+                        String item = event.getInventory().getItem(2).getType().toString();
+
+                        int custommodeldata;
+                        if (event.getInventory().getItem(2).getItemMeta().hasCustomModelData()) {
+                            custommodeldata = event.getInventory().getItem(2).getItemMeta().getCustomModelData();
+                        } else {
+                            custommodeldata = 0;
+                        }
+
+                        config.set("Balloons." + playerIdEditing.get(player) + ".item", item);
+                        config.set("Balloons." + playerIdEditing.get(player) + ".custommodeldata", custommodeldata);
+                    }
+
+                    config.set("Balloons." + playerIdEditing.get(player) + ".displayname", displayname);
                     config.save(file);
+
+                    Balloons.reload(player);
                 }
             }
 
@@ -235,8 +263,7 @@ public class Menu implements Listener {
                             File file = new File(Main.getInstance().getDataFolder(), "config.yml");
                             YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-                            Bukkit.broadcastMessage(playerlist.get(player).get(slot + pages.get(player)));
-                            if (event.isRightClick()) {
+                            if (event.isRightClick() && player.hasPermission("Balloons+.editing")) {
                                 editInventory(player, playerlist.get(player).get(slot + pages.get(player)), event.getCurrentItem());
                             } else {
                                 if (SummonBalloons.balloons.containsKey(player)) {
@@ -247,7 +274,7 @@ public class Menu implements Listener {
                                         itemStack.setItemMeta(itemMeta);
                                         SummonBalloons.as.get(player).getEquipment().setHelmet(itemStack);
                                     } else {
-                                        SummonBalloons.as.get(player).getEquipment().setHelmet(GetSkull.createSkull(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".head")));
+                                        SummonBalloons.as.get(player).getEquipment().setHelmet(Skull.createSkull(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".head")));
                                     }
                                 } else {
                                     if (config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".item") != null) {
@@ -258,7 +285,7 @@ public class Menu implements Listener {
                                         SummonBalloons.summonBalloon(player, itemStack);
 
                                     } else {
-                                        SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".head")));
+                                        SummonBalloons.summonBalloon(player, Skull.createSkull(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".head")));
                                     }
                                 }
                                 SummonBalloons.playerBalloons.put(player, (playerlist.get(player).get(slot + pages.get(player))));
@@ -299,34 +326,36 @@ public class Menu implements Listener {
                                     String permission = config.getString("Balloons." + key + ".permission");
                                     if (permission != null) {
                                         if (player.hasPermission(permission)) {
-                                            Bukkit.broadcastMessage(key);
-
-                                            if (SummonBalloons.balloons.containsKey(player)) {
-
-                                                if (config.getString("Balloons." + key + ".item") != null) {
-                                                    ItemStack itemStack = new ItemStack(Material.valueOf(config.getString("Balloons." + key + ".item")));
-                                                    ItemMeta itemMeta = itemStack.getItemMeta();
-                                                    itemMeta.setCustomModelData(config.getInt("Balloons." + key + ".custommodeldata"));
-                                                    itemStack.setItemMeta(itemMeta);
-                                                    SummonBalloons.as.get(player).getEquipment().setHelmet(itemStack);
-                                                } else {
-                                                    SummonBalloons.as.get(player).getEquipment().setHelmet(GetSkull.createSkull(config.getString("Balloons." + key + ".head")));
-                                                }
+                                            if (event.isRightClick() && player.hasPermission("Balloons+.editing")) {
+                                                editInventory(player, key, event.getCurrentItem());
                                             } else {
-                                                if (config.getString("Balloons." + key + ".item") != null) {
-                                                    ItemStack itemStack = new ItemStack(Material.valueOf(config.getString("Balloons." + key + ".item")));
-                                                    ItemMeta itemMeta = itemStack.getItemMeta();
-                                                    itemMeta.setCustomModelData(config.getInt("Balloons." + key + ".custommodeldata"));
-                                                    itemStack.setItemMeta(itemMeta);
-                                                    SummonBalloons.summonBalloon(player, itemStack);
+                                                if (SummonBalloons.balloons.containsKey(player)) {
 
+                                                    if (config.getString("Balloons." + key + ".item") != null) {
+                                                        ItemStack itemStack = new ItemStack(Material.valueOf(config.getString("Balloons." + key + ".item")));
+                                                        ItemMeta itemMeta = itemStack.getItemMeta();
+                                                        itemMeta.setCustomModelData(config.getInt("Balloons." + key + ".custommodeldata"));
+                                                        itemStack.setItemMeta(itemMeta);
+                                                        SummonBalloons.as.get(player).getEquipment().setHelmet(itemStack);
+                                                    } else {
+                                                        SummonBalloons.as.get(player).getEquipment().setHelmet(Skull.createSkull(config.getString("Balloons." + key + ".head")));
+                                                    }
                                                 } else {
-                                                    SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + key + ".head")));
-                                                }
-                                            }
+                                                    if (config.getString("Balloons." + key + ".item") != null) {
+                                                        ItemStack itemStack = new ItemStack(Material.valueOf(config.getString("Balloons." + key + ".item")));
+                                                        ItemMeta itemMeta = itemStack.getItemMeta();
+                                                        itemMeta.setCustomModelData(config.getInt("Balloons." + key + ".custommodeldata"));
+                                                        itemStack.setItemMeta(itemMeta);
+                                                        SummonBalloons.summonBalloon(player, itemStack);
 
-                                            SummonBalloons.playerBalloons.put(player, key);
-                                            player.closeInventory();
+                                                    } else {
+                                                        SummonBalloons.summonBalloon(player, Skull.createSkull(config.getString("Balloons." + key + ".head")));
+                                                    }
+                                                }
+
+                                                SummonBalloons.playerBalloons.put(player, key);
+                                                player.closeInventory();
+                                            }
                                         }
                                     }
 

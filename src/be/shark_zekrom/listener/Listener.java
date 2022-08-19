@@ -1,7 +1,7 @@
 package be.shark_zekrom.listener;
 
 import be.shark_zekrom.Main;
-import be.shark_zekrom.utils.GetSkull;
+import be.shark_zekrom.utils.Skull;
 import be.shark_zekrom.utils.SummonBalloons;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -140,7 +140,7 @@ public class Listener implements org.bukkit.event.Listener {
                     SummonBalloons.summonBalloon(player, itemStack);
                     SummonBalloons.as.get(player).getEquipment().setHelmet(itemStack);
                 } else {
-                    SummonBalloons.summonBalloon(player, GetSkull.createSkull(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".head")));
+                    SummonBalloons.summonBalloon(player, Skull.createSkull(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".head")));
 
                 }
             }

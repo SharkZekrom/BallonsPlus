@@ -2,7 +2,7 @@ package be.shark_zekrom.commands;
 
 import be.shark_zekrom.Main;
 import be.shark_zekrom.inventory.Menu;
-import be.shark_zekrom.utils.GetSkull;
+import be.shark_zekrom.utils.Skull;
 import be.shark_zekrom.utils.SummonBalloons;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -55,22 +55,7 @@ public class Balloons implements CommandExecutor {
             }
             if (args[0].equalsIgnoreCase("reload")) {
 
-
-                try {
-                    Main.getInstance().getConfig().load(new File(Main.getInstance().getDataFolder(), "config.yml"));
-
-
-                    Menu.list.clear();
-                    ConfigurationSection cs = Main.getInstance().getConfig().getConfigurationSection("Balloons");
-                    Menu.list.addAll(cs.getKeys(false));
-
-                    Main.showOnlyBallonsWithPermission = Main.getInstance().getConfig().getBoolean("ShowOnlyBalloonsWithPermission");
-                    player.sendMessage("§b[Balloons+] reloaded.");
-
-                } catch (IOException | InvalidConfigurationException e) {
-                    throw new RuntimeException(e);
-                }
-
+                reload(player);
 
 
             }
@@ -91,7 +76,7 @@ public class Balloons implements CommandExecutor {
                                 itemStack.setItemMeta(itemMeta);
                                 SummonBalloons.as.get(player).getEquipment().setHelmet(itemStack);
                             } else {
-                                SummonBalloons.as.get(player).getEquipment().setHelmet(GetSkull.createSkull(config.getString("Balloons." + args[1] + ".head")));
+                                SummonBalloons.as.get(player).getEquipment().setHelmet(Skull.createSkull(config.getString("Balloons." + args[1] + ".head")));
 
                             }
                         } else {
@@ -103,7 +88,7 @@ public class Balloons implements CommandExecutor {
                                 SummonBalloons.summonBalloon(player, itemStack);
 
                             } else {
-                                SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + args[1] + ".head")));
+                                SummonBalloons.summonBalloon(player, Skull.createSkull(config.getString("Balloons." + args[1] + ".head")));
 
                             }
 
@@ -130,5 +115,24 @@ public class Balloons implements CommandExecutor {
         return false;
     }
 
+
+
+    public static void reload(Player player) {
+        try {
+            Main.getInstance().getConfig().load(new File(Main.getInstance().getDataFolder(), "config.yml"));
+
+
+            Menu.list.clear();
+            ConfigurationSection cs = Main.getInstance().getConfig().getConfigurationSection("Balloons");
+            Menu.list.addAll(cs.getKeys(false));
+
+            Main.showOnlyBallonsWithPermission = Main.getInstance().getConfig().getBoolean("ShowOnlyBalloonsWithPermission");
+            player.sendMessage("§b[Balloons+] reloaded.");
+
+        } catch (IOException | InvalidConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 
 }

@@ -3,8 +3,8 @@ package be.shark_zekrom;
 import be.shark_zekrom.commands.Balloons;
 import be.shark_zekrom.inventory.Menu;
 import be.shark_zekrom.utils.Distance;
-import be.shark_zekrom.utils.GetSkull;
 import be.shark_zekrom.listener.Listener;
+import be.shark_zekrom.utils.Skull;
 import be.shark_zekrom.utils.SummonBalloons;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -76,7 +76,7 @@ public class Main extends JavaPlugin {
                             SummonBalloons.summonBalloon(player, itemStack);
 
                         } else {
-                            SummonBalloons.summonBalloon(player, GetSkull.createSkull(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".head")));
+                            SummonBalloons.summonBalloon(player, Skull.createSkull(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".head")));
 
                         }
                     }

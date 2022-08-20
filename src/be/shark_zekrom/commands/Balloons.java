@@ -40,13 +40,13 @@ public class Balloons implements CommandExecutor {
                     SummonBalloons.removeBalloon(player);
                     SummonBalloons.playerBalloons.remove(player);
 
-                    player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("BalloonsRemoved"));
+                    player.sendMessage(Main.getInstance().getConfig().getString("Prefix") + Main.getInstance().getConfig().getString("BalloonsRemoved"));
 
                 }
             }
             if (args[0].equalsIgnoreCase("inventory")) {
                 if (player.isInsideVehicle()) {
-                    player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("CantOpenInventory"));
+                    player.sendMessage(Main.getInstance().getConfig().getString("Prefix") + Main.getInstance().getConfig().getString("CantOpenInventory"));
 
                 } else {
                     Menu.inventory(player, 0);
@@ -126,7 +126,7 @@ public class Balloons implements CommandExecutor {
             Menu.list.addAll(cs.getKeys(false));
 
             Main.showOnlyBallonsWithPermission = Main.getInstance().getConfig().getBoolean("ShowOnlyBalloonsWithPermission");
-            player.sendMessage("§b[Balloons+] reloaded.");
+            player.sendMessage(Main.getInstance().getConfig().getString("Prefix") + Main.getInstance().getConfig().getString("Reload"));
 
         } catch (IOException | InvalidConfigurationException e) {
             throw new RuntimeException(e);

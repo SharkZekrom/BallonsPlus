@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -18,8 +19,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Balloons implements CommandExecutor {
+public class Balloons implements CommandExecutor, TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command cmd, String string, String[] args) {
@@ -132,6 +135,20 @@ public class Balloons implements CommandExecutor {
             throw new RuntimeException(e);
         }
 
+    }
+    @Override
+    public List<String> onTabComplete(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
+        List<String> arguments = new ArrayList<>();
+        if (args.length == 1) {
+            arguments.add("help");
+            arguments.add("inventory");
+            arguments.add("spawn");
+            arguments.add("remove");
+            if (sender.hasPermission("balloon+.*")){
+                arguments.add("reload");
+            }
+        }
+        return arguments;
     }
 
 }

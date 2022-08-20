@@ -54,6 +54,7 @@ public class Main extends JavaPlugin {
             }
         }
         this.getCommand("balloons+").setExecutor(new Balloons());
+        this.getCommand("balloons+").setTabCompleter(new Balloons());
 
         new BukkitRunnable() {
             public void run() {

@@ -14,13 +14,16 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Menu implements Listener {
@@ -30,6 +33,10 @@ public class Menu implements Listener {
     public static HashMap<Player, ArrayList<String>> playerlist = new HashMap<>();
 
     public static HashMap<Player, String> playerIdEditing = new HashMap<>();
+    public static HashMap<Player, ItemStack> playerItemEditing = new HashMap<>();
+    public static HashMap<Player, String> playerIdEditingPermission = new HashMap<>();
+    public static HashMap<Player, Boolean> playerIdEditingPermissionBoolean = new HashMap<>();
+
 
 
     public static void inventory(Player player, int loop) {
@@ -190,8 +197,47 @@ public class Menu implements Listener {
         balloon.setItemMeta(itemMeta);
         inventory.setItem(2, balloon);
 
+        ItemStack permission = new ItemStack(Material.OAK_SIGN, 1);
+        ItemMeta permissionMeta = permission.getItemMeta();
+        permissionMeta.setDisplayName("§ePermission");
+        permissionMeta.setLore(Arrays.asList("§7Click to edit the permission","§7of this balloon"," ", "§7Current: " + playerIdEditingPermission.get(player)));
+        permission.setItemMeta(permissionMeta);
+        inventory.setItem(1, permission);
 
         playerIdEditing.put(player, id);
+        playerItemEditing.put(player, balloon);
+    }
+
+    public static void editInventoryPermission(Player player) {
+
+        player.sendMessage("enter permission");
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (playerIdEditingPermissionBoolean.containsKey(player)) {
+                    playerIdEditingPermissionBoolean.remove(player);
+                    player.sendMessage("time out");
+                }
+            }
+        }.runTaskLater(Main.getInstance(), 20*30);
+
+    }
+
+    @EventHandler
+    private void onChat(AsyncPlayerChatEvent event) {
+
+        if (playerIdEditingPermissionBoolean.containsKey(event.getPlayer())) {
+            event.setCancelled(true);
+            playerIdEditingPermission.put(event.getPlayer(), event.getMessage());
+            playerIdEditingPermissionBoolean.remove(event.getPlayer());
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    editInventory(event.getPlayer(), playerIdEditing.get(event.getPlayer()), playerItemEditing.get(event.getPlayer()));
+                }
+            }.runTask(Main.getInstance());
+            event.getPlayer().sendMessage("permission set");
+        }
     }
 
 
@@ -203,8 +249,19 @@ public class Menu implements Listener {
 
         if (event.getView().getTitle().equalsIgnoreCase("Balloon Editing")) {
             if (event.getClickedInventory().getType() != InventoryType.PLAYER) {
-                if (slot == 0 || slot == 1 || slot == 3) {
+                if (slot == 0 || slot == 3) {
                     event.setCancelled(true);
+                }
+
+                if (slot == 1) {
+                    event.setCancelled(true);
+                    if (playerIdEditing.containsKey(player)) {
+                        playerItemEditing.put(player, event.getInventory().getItem(2));
+
+                        playerIdEditingPermissionBoolean.put(player, true);
+                        editInventoryPermission(player);
+                        player.closeInventory();
+                    }
                 }
             }
 
@@ -212,6 +269,7 @@ public class Menu implements Listener {
                 event.setCancelled(true);
                 if (event.getView().getTopInventory().getItem(2) != null) {
                     player.closeInventory();
+
                     File file = new File(Main.getInstance().getDataFolder(), "config.yml");
                     YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
@@ -242,8 +300,14 @@ public class Menu implements Listener {
                     }
 
                     config.set("Balloons." + playerIdEditing.get(player) + ".displayname", displayname);
+                    Bukkit.broadcastMessage(playerIdEditingPermission.get(player));
+                    config.set("Balloons." + playerIdEditing.get(player) + ".permission", playerIdEditingPermission.get(player));
+
                     config.save(file);
 
+                    playerIdEditingPermission.remove(player);
+                    playerIdEditing.remove(player);
+                    playerItemEditing.remove(player);
                     Balloons.reload();
                 }
             }
@@ -266,6 +330,7 @@ public class Menu implements Listener {
                                 if (event.getClickedInventory().getType() != InventoryType.PLAYER) {
 
                                     if (event.isRightClick() && player.hasPermission("Balloons+.editing")) {
+                                        playerIdEditingPermission.put(player, config.getString("Balloons." +  playerlist.get(player).get(slot + pages.get(player)) + ".permission"));
                                         editInventory(player, playerlist.get(player).get(slot + pages.get(player)), event.getCurrentItem());
                                     } else {
                                         if (SummonBalloons.balloons.containsKey(player)) {
@@ -335,6 +400,7 @@ public class Menu implements Listener {
                                                 if (player.hasPermission(permission)) {
 
                                                     if (event.isRightClick() && player.hasPermission("Balloons+.editing")) {
+                                                        playerIdEditingPermission.put(player, permission);
                                                         editInventory(player, key, event.getCurrentItem());
                                                     } else {
                                                         if (SummonBalloons.balloons.containsKey(player)) {

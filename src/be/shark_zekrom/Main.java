@@ -93,7 +93,7 @@ public class Main extends JavaPlugin {
         config.addDefault("ShowOnlyBalloonsWithPermission", false);
         config.addDefault("ShowParticlesBalloonsOnRemove", true);
         config.addDefault("BalloonPrefix", "§b[Balloons+] ");
-        config.addDefault("BalloonReload", "§7Successfully reloaded!");
+        config.addDefault("BalloonReload", "§bSuccessfully reloaded!");
         config.addDefault("NoBalloonsFound", "§bNo balloons found with this name.");
         config.addDefault("NoBalloonsPermission", "§bYou do not have permission to use this balloons.");
         config.addDefault("BalloonsRemoved", "§bBalloons removed.");

@@ -244,7 +244,7 @@ public class Menu implements Listener {
                     config.set("Balloons." + playerIdEditing.get(player) + ".displayname", displayname);
                     config.save(file);
 
-                    Balloons.reload(player);
+                    Balloons.reload();
                 }
             }
 

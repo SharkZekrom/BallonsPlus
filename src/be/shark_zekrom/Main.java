@@ -27,6 +27,8 @@ public class Main extends JavaPlugin {
     }
 
     public static boolean showOnlyBallonsWithPermission = false;
+    public static String prefix;
+
 
     @Override
     public void onEnable() {
@@ -90,8 +92,8 @@ public class Main extends JavaPlugin {
 
         config.addDefault("ShowOnlyBalloonsWithPermission", false);
         config.addDefault("ShowParticlesBalloonsOnRemove", true);
-        config.addDefault("Prefix", "§b[Balloons+] ");
-        config.addDefault("Reload", "§7Successfully reloaded!");
+        config.addDefault("BalloonPrefix", "§b[Balloons+] ");
+        config.addDefault("BalloonReload", "§7Successfully reloaded!");
         config.addDefault("NoBalloonsFound", "§bNo balloons found with this name.");
         config.addDefault("NoBalloonsPermission", "§bYou do not have permission to use this balloons.");
         config.addDefault("BalloonsRemoved", "§bBalloons removed.");
@@ -124,6 +126,7 @@ public class Main extends JavaPlugin {
         Menu.list.addAll(cs.getKeys(false));
 
         showOnlyBallonsWithPermission = config.getBoolean("ShowOnlyBalloonsWithPermission");
+        prefix = config.getString("BalloonPrefix");
 
         Bukkit.getLogger().info("Balloons+ enabled !");
 

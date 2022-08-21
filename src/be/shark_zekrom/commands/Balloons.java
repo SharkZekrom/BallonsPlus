@@ -56,8 +56,12 @@ public class Balloons implements CommandExecutor, TabExecutor {
                 }
             }
             if (args[0].equalsIgnoreCase("reload")) {
-
-                reload(player);
+                if (player.hasPermission("balloons+.reload")) {
+                    reload();
+                    player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("BalloonReload"));
+                } else {
+                    player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("NoPermission"));
+                }
 
 
             }
@@ -119,17 +123,17 @@ public class Balloons implements CommandExecutor, TabExecutor {
 
 
 
-    public static void reload(Player player) {
+    public static void reload() {
         try {
             Main.getInstance().getConfig().load(new File(Main.getInstance().getDataFolder(), "config.yml"));
-
 
             Menu.list.clear();
             ConfigurationSection cs = Main.getInstance().getConfig().getConfigurationSection("Balloons");
             Menu.list.addAll(cs.getKeys(false));
 
             Main.showOnlyBallonsWithPermission = Main.getInstance().getConfig().getBoolean("ShowOnlyBalloonsWithPermission");
-            player.sendMessage(Main.getInstance().getConfig().getString("Prefix") + Main.getInstance().getConfig().getString("Reload"));
+            Main.prefix = Main.getInstance().getConfig().getString("BalloonPrefix");
+
 
         } catch (IOException | InvalidConfigurationException e) {
             throw new RuntimeException(e);

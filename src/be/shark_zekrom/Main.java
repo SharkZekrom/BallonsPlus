@@ -1,6 +1,6 @@
 package be.shark_zekrom;
 
-import be.shark_zekrom.commands.Balloons;
+import be.shark_zekrom.commands.Commands;
 import be.shark_zekrom.inventory.Menu;
 import be.shark_zekrom.utils.Distance;
 import be.shark_zekrom.listener.Listener;
@@ -55,8 +55,8 @@ public class Main extends JavaPlugin {
 
             }
         }
-        this.getCommand("balloons+").setExecutor(new Balloons());
-        this.getCommand("balloons+").setTabCompleter(new Balloons());
+        this.getCommand("balloons+").setExecutor(new Commands());
+        this.getCommand("balloons+").setTabCompleter(new Commands());
 
         new BukkitRunnable() {
             public void run() {

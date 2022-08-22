@@ -1,7 +1,7 @@
 package be.shark_zekrom.inventory;
 
 import be.shark_zekrom.Main;
-import be.shark_zekrom.commands.Balloons;
+import be.shark_zekrom.commands.Commands;
 import be.shark_zekrom.utils.Skulls;
 import be.shark_zekrom.utils.InventoryItems;
 import be.shark_zekrom.utils.SummonBalloons;
@@ -388,7 +388,7 @@ public class Menu implements Listener {
                         playerIdCreatePermission.remove(player);
                         playerIdCreate.remove(player);
                         playerItemCreate.remove(player);
-                        Balloons.reload();
+                        Commands.reload();
                     }
                 }
 
@@ -454,7 +454,7 @@ public class Menu implements Listener {
                         playerIdEditingPermission.remove(player);
                         playerIdEditing.remove(player);
                         playerItemEditing.remove(player);
-                        Balloons.reload();
+                        Commands.reload();
                     }
                 }
             }

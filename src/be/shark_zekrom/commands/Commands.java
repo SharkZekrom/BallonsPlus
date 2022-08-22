@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Balloons implements CommandExecutor, TabExecutor {
+public class Commands implements CommandExecutor, TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command cmd, String string, String[] args) {
@@ -121,14 +121,12 @@ public class Balloons implements CommandExecutor, TabExecutor {
             }
 
         } else {
-            player.sendMessage("§b==========[Balloons+]==========");
-            player.sendMessage(ChatColor.AQUA + "");
-            player.sendMessage(ChatColor.AQUA + "/balloons+ help");
-            player.sendMessage(ChatColor.AQUA + "/balloons+ inventory");
-            player.sendMessage(ChatColor.AQUA + "/balloons+ reload");
-            player.sendMessage(ChatColor.AQUA + "/balloons+ spawn <name>");
-            player.sendMessage(ChatColor.AQUA + "/balloons+ create <name>");
-            player.sendMessage(ChatColor.AQUA + "/balloons+ remove");
+            if (player.isInsideVehicle()) {
+                player.sendMessage(Main.getInstance().getConfig().getString("Prefix") + Main.getInstance().getConfig().getString("CantOpenInventory"));
+
+            } else {
+                Menu.inventory(player, 0);
+            }
         }
         return false;
     }

@@ -103,13 +103,13 @@ public class Balloons implements CommandExecutor, TabExecutor {
 
                         }
                         SummonBalloons.playerBalloons.put(player, args[1]);
-                        player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("BalloonsSummoned"));
+                        player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("BalloonsSummoned"));
 
                     } else {
-                        player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("NoBalloonsPermission"));
+                        player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("NoBalloonsPermission"));
                     }
                 } else {
-                    player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("NoBalloonsFound"));
+                    player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("NoBalloonsFound"));
                 }
             }
 

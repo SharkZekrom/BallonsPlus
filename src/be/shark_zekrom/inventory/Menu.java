@@ -217,13 +217,13 @@ public class Menu implements Listener {
 
     public static void editInventoryPermission(Player player) {
 
-        player.sendMessage("enter permission");
+        player.sendMessage("§b[Balloons+] Enter permission.");
         new BukkitRunnable() {
             @Override
             public void run() {
                 if (playerIdEditingPermissionBoolean.containsKey(player)) {
                     playerIdEditingPermissionBoolean.remove(player);
-                    player.sendMessage("time out");
+                    player.sendMessage("§b[Balloons+] §cTime out.");
                 }
             }
         }.runTaskLater(Main.getInstance(), 20 * 30);
@@ -281,14 +281,13 @@ public class Menu implements Listener {
 
     public static void createInventoryPermission(Player player) {
 
-
-        player.sendMessage("enter permission");
+        player.sendMessage("§b[Balloons+] Enter permission.");
         new BukkitRunnable() {
             @Override
             public void run() {
                 if (playerIdCreatePermissionBoolean.containsKey(player)) {
                     playerIdCreatePermissionBoolean.remove(player);
-                    player.sendMessage("time out");
+                    player.sendMessage("§b[Balloons+] §cTime out.");
                 }
             }
         }.runTaskLater(Main.getInstance(), 20 * 30);
@@ -308,7 +307,7 @@ public class Menu implements Listener {
                     editInventory(event.getPlayer(), playerIdEditing.get(event.getPlayer()), playerItemEditing.get(event.getPlayer()));
                 }
             }.runTask(Main.getInstance());
-            event.getPlayer().sendMessage("permission set");
+            event.getPlayer().sendMessage("§b[Balloon+] permission set.");
         }
 
 
@@ -322,7 +321,7 @@ public class Menu implements Listener {
                     createInventory(event.getPlayer());
                 }
             }.runTask(Main.getInstance());
-            event.getPlayer().sendMessage("permission set");
+            event.getPlayer().sendMessage("§b[Balloon+] permission set.");
         }
     }
 
@@ -380,7 +379,6 @@ public class Menu implements Listener {
                         }
 
                         config.set("Balloons." + playerIdCreate.get(player) + ".displayname", displayname);
-                        Bukkit.broadcastMessage(playerIdCreatePermission.get(player));
                         config.set("Balloons." + playerIdCreate.get(player) + ".permission", playerIdCreatePermission.get(player));
 
                         config.save(file);
@@ -447,7 +445,6 @@ public class Menu implements Listener {
                         }
 
                         config.set("Balloons." + playerIdEditing.get(player) + ".displayname", displayname);
-                        Bukkit.broadcastMessage(playerIdEditingPermission.get(player));
                         config.set("Balloons." + playerIdEditing.get(player) + ".permission", playerIdEditingPermission.get(player));
 
                         config.save(file);

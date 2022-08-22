@@ -106,7 +106,7 @@ public class Main extends JavaPlugin {
         config.addDefault("BalloonsMenuNoPermissionToSummon", "§cNo permission to summon");
         config.addDefault("CantOpenInventory", "§bYou can't open the inventory inside a vehicle.");
         config.addDefault("BalloonsMenuEditing", "Balloon editing");
-        config.addDefault("BalloonsMenuCreating", "Balloon creating");
+        config.addDefault("BalloonsMenuCreate", "Balloon creating");
         config.addDefault("BalloonsMenuPermission", "§ePermission");
         config.addDefault("BalloonsEnterPermission", "§bEnter permission.");
         config.addDefault("BalloonsPermissionSet", "§bPermission set.");

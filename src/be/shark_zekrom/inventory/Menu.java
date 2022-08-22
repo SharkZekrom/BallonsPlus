@@ -232,7 +232,7 @@ public class Menu implements Listener {
 
 
     public static void createInventory(Player player) {
-        Inventory inventory = Bukkit.createInventory(null, InventoryType.HOPPER, Main.getInstance().getConfig().getString("BalloonsMenuCreating"));
+        Inventory inventory = Bukkit.createInventory(null, InventoryType.HOPPER, Main.getInstance().getConfig().getString("BalloonsMenuCreate"));
         player.openInventory(inventory);
 
         for (int i = 0; i < 4; i++) {

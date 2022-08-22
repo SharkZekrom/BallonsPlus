@@ -65,7 +65,9 @@ public class Balloons implements CommandExecutor, TabExecutor {
 
 
             }
-        } else if (args.length > 1) {
+
+
+            } else if (args.length > 1) {
 
             if (args[0].equalsIgnoreCase("spawn")) {
                 File file = new File(Main.getInstance().getDataFolder(), "config.yml");
@@ -109,6 +111,14 @@ public class Balloons implements CommandExecutor, TabExecutor {
                     player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("NoBalloonsFound"));
                 }
             }
+
+            if (args[0].equalsIgnoreCase("create")) {
+                if (player.hasPermission("balloons+.create")) {
+                    Menu.playerIdCreate.put(player, args[1]);
+                    Menu.createInventory(player);
+                }
+            }
+
         } else {
             player.sendMessage("§b==========[Balloons+]==========");
             player.sendMessage(ChatColor.AQUA + "");
@@ -116,6 +126,7 @@ public class Balloons implements CommandExecutor, TabExecutor {
             player.sendMessage(ChatColor.AQUA + "/balloons+ inventory");
             player.sendMessage(ChatColor.AQUA + "/balloons+ reload");
             player.sendMessage(ChatColor.AQUA + "/balloons+ spawn <name>");
+            player.sendMessage(ChatColor.AQUA + "/balloons+ create <name>");
             player.sendMessage(ChatColor.AQUA + "/balloons+ remove");
         }
         return false;
@@ -150,6 +161,7 @@ public class Balloons implements CommandExecutor, TabExecutor {
             arguments.add("remove");
             if (sender.hasPermission("balloon+.*")){
                 arguments.add("reload");
+                arguments.add("create");
             }
         }
         return arguments;

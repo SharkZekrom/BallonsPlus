@@ -38,6 +38,13 @@ public class Menu implements Listener {
     public static HashMap<Player, Boolean> playerIdEditingPermissionBoolean = new HashMap<>();
 
 
+    public static HashMap<Player, String> playerIdCreate = new HashMap<>();
+    public static HashMap<Player, ItemStack> playerItemCreate = new HashMap<>();
+    public static HashMap<Player, String> playerIdCreatePermission = new HashMap<>();
+    public static HashMap<Player, Boolean> playerIdCreatePermissionBoolean = new HashMap<>();
+
+
+
 
     public static void inventory(Player player, int loop) {
         pages.put(player, loop);
@@ -219,7 +226,72 @@ public class Menu implements Listener {
                     player.sendMessage("time out");
                 }
             }
-        }.runTaskLater(Main.getInstance(), 20*30);
+        }.runTaskLater(Main.getInstance(), 20 * 30);
+    }
+
+
+
+    public static void createInventory(Player player) {
+        Inventory inventory = Bukkit.createInventory(null, InventoryType.HOPPER, "Balloon Create");
+        player.openInventory(inventory);
+
+        for (int i = 0; i < 4; i++) {
+            ItemStack item = new ItemStack(Material.BLUE_STAINED_GLASS_PANE, 1);
+            ItemMeta itemmeta = item.getItemMeta();
+            itemmeta.setDisplayName(" ");
+            item.setItemMeta(itemmeta);
+            inventory.setItem(i, item);
+
+        }
+
+        ItemStack item = new ItemStack(Material.GREEN_STAINED_GLASS_PANE, 1);
+        ItemMeta itemmeta = item.getItemMeta();
+        itemmeta.setDisplayName("§aSave");
+        item.setItemMeta(itemmeta);
+        inventory.setItem(4, item);
+
+
+        if (playerItemCreate.get(player) != null) {
+            inventory.setItem(2, playerItemCreate.get(player));
+        } else {
+            inventory.setItem(2, new ItemStack(Material.AIR));
+        }
+
+
+        if (playerIdCreatePermission.get(player) != null) {
+            ItemStack permission = new ItemStack(Material.OAK_SIGN, 1);
+            ItemMeta permissionMeta = permission.getItemMeta();
+            permissionMeta.setDisplayName("§ePermission");
+            permissionMeta.setLore(Arrays.asList("§7Click to edit the permission","§7of this balloon"," ", "§7Current: " + playerIdCreatePermission.get(player)));
+            permission.setItemMeta(permissionMeta);
+            inventory.setItem(1, permission);
+        } else {
+            ItemStack permission = new ItemStack(Material.OAK_SIGN, 1);
+            ItemMeta permissionMeta = permission.getItemMeta();
+            permissionMeta.setDisplayName("§ePermission");
+            permissionMeta.setLore(Arrays.asList("§7Click to edit the permission","§7of this balloon"," ", "§7Current: "));
+            permission.setItemMeta(permissionMeta);
+            inventory.setItem(1, permission);
+        }
+
+    }
+
+
+
+
+    public static void createInventoryPermission(Player player) {
+
+
+        player.sendMessage("enter permission");
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (playerIdCreatePermissionBoolean.containsKey(player)) {
+                    playerIdCreatePermissionBoolean.remove(player);
+                    player.sendMessage("time out");
+                }
+            }
+        }.runTaskLater(Main.getInstance(), 20 * 30);
 
     }
 
@@ -238,6 +310,20 @@ public class Menu implements Listener {
             }.runTask(Main.getInstance());
             event.getPlayer().sendMessage("permission set");
         }
+
+
+        if (playerIdCreatePermissionBoolean.containsKey(event.getPlayer())) {
+            event.setCancelled(true);
+            playerIdCreatePermission.put(event.getPlayer(), event.getMessage());
+            playerIdCreatePermissionBoolean.remove(event.getPlayer());
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    createInventory(event.getPlayer());
+                }
+            }.runTask(Main.getInstance());
+            event.getPlayer().sendMessage("permission set");
+        }
     }
 
 
@@ -246,6 +332,68 @@ public class Menu implements Listener {
         Player player = (Player) event.getWhoClicked();
 
         int slot = event.getSlot();
+
+
+        if (event.getView().getTitle().equalsIgnoreCase("Balloon Create")) {
+            if (event.getClickedInventory().getType() != InventoryType.PLAYER) {
+                if (slot == 0 || slot == 3) {
+                    event.setCancelled(true);
+                }
+                if (slot == 1) {
+                    event.setCancelled(true);
+                    if (playerIdCreate.containsKey(player)) {
+                        playerItemCreate.put(player, event.getInventory().getItem(2));
+
+                        playerIdCreatePermissionBoolean.put(player, true);
+                        createInventoryPermission(player);
+                        player.closeInventory();
+                    }
+                }
+
+                if (slot == 4 && playerIdCreatePermission.containsKey(player)) {
+                    event.setCancelled(true);
+                    if (event.getView().getTopInventory().getItem(2) != null) {
+                        player.closeInventory();
+
+                        File file = new File(Main.getInstance().getDataFolder(), "config.yml");
+                        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+
+                        String displayname = event.getInventory().getItem(2).getItemMeta().getDisplayName();
+
+
+                        if (event.getInventory().getItem(2).getType() == Material.PLAYER_HEAD) {
+                            config.set("Balloons." + playerIdCreate.get(player) + ".head", Skulls.getSkull(event.getInventory().getItem(2)));
+
+
+                        } else {
+                            String item = event.getInventory().getItem(2).getType().toString();
+
+                            int custommodeldata;
+                            if (event.getInventory().getItem(2).getItemMeta().hasCustomModelData()) {
+                                custommodeldata = event.getInventory().getItem(2).getItemMeta().getCustomModelData();
+                            } else {
+                                custommodeldata = 0;
+                            }
+
+                            config.set("Balloons." + playerIdCreate.get(player) + ".item", item);
+                            config.set("Balloons." + playerIdCreate.get(player) + ".custommodeldata", custommodeldata);
+                        }
+
+                        config.set("Balloons." + playerIdCreate.get(player) + ".displayname", displayname);
+                        Bukkit.broadcastMessage(playerIdCreatePermission.get(player));
+                        config.set("Balloons." + playerIdCreate.get(player) + ".permission", playerIdCreatePermission.get(player));
+
+                        config.save(file);
+
+                        playerIdCreatePermission.remove(player);
+                        playerIdCreate.remove(player);
+                        playerItemCreate.remove(player);
+                        Balloons.reload();
+                    }
+                }
+
+            }
+        }
 
         if (event.getView().getTitle().equalsIgnoreCase("Balloon Editing")) {
             if (event.getClickedInventory().getType() != InventoryType.PLAYER) {
@@ -263,52 +411,52 @@ public class Menu implements Listener {
                         player.closeInventory();
                     }
                 }
-            }
 
-            if (slot == 4) {
-                event.setCancelled(true);
-                if (event.getView().getTopInventory().getItem(2) != null) {
-                    player.closeInventory();
+                if (slot == 4) {
+                    event.setCancelled(true);
+                    if (event.getView().getTopInventory().getItem(2) != null) {
+                        player.closeInventory();
 
-                    File file = new File(Main.getInstance().getDataFolder(), "config.yml");
-                    YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+                        File file = new File(Main.getInstance().getDataFolder(), "config.yml");
+                        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-                    String displayname = event.getInventory().getItem(2).getItemMeta().getDisplayName();
+                        String displayname = event.getInventory().getItem(2).getItemMeta().getDisplayName();
 
-                    config.set("Balloons." + playerIdEditing.get(player) + ".item", null);
-                    config.set("Balloons." + playerIdEditing.get(player) + ".displayname", null);
-                    config.set("Balloons." + playerIdEditing.get(player) + ".custommodeldata", null);
-                    config.set("Balloons." + playerIdEditing.get(player) + ".head", null);
-
-
-                    if (event.getInventory().getItem(2).getType() == Material.PLAYER_HEAD) {
-                        config.set("Balloons." + playerIdEditing.get(player) + ".head", Skulls.getSkull(event.getInventory().getItem(2)));
+                        config.set("Balloons." + playerIdEditing.get(player) + ".item", null);
+                        config.set("Balloons." + playerIdEditing.get(player) + ".displayname", null);
+                        config.set("Balloons." + playerIdEditing.get(player) + ".custommodeldata", null);
+                        config.set("Balloons." + playerIdEditing.get(player) + ".head", null);
 
 
-                    } else {
-                        String item = event.getInventory().getItem(2).getType().toString();
+                        if (event.getInventory().getItem(2).getType() == Material.PLAYER_HEAD) {
+                            config.set("Balloons." + playerIdEditing.get(player) + ".head", Skulls.getSkull(event.getInventory().getItem(2)));
 
-                        int custommodeldata;
-                        if (event.getInventory().getItem(2).getItemMeta().hasCustomModelData()) {
-                            custommodeldata = event.getInventory().getItem(2).getItemMeta().getCustomModelData();
+
                         } else {
-                            custommodeldata = 0;
+                            String item = event.getInventory().getItem(2).getType().toString();
+
+                            int custommodeldata;
+                            if (event.getInventory().getItem(2).getItemMeta().hasCustomModelData()) {
+                                custommodeldata = event.getInventory().getItem(2).getItemMeta().getCustomModelData();
+                            } else {
+                                custommodeldata = 0;
+                            }
+
+                            config.set("Balloons." + playerIdEditing.get(player) + ".item", item);
+                            config.set("Balloons." + playerIdEditing.get(player) + ".custommodeldata", custommodeldata);
                         }
 
-                        config.set("Balloons." + playerIdEditing.get(player) + ".item", item);
-                        config.set("Balloons." + playerIdEditing.get(player) + ".custommodeldata", custommodeldata);
+                        config.set("Balloons." + playerIdEditing.get(player) + ".displayname", displayname);
+                        Bukkit.broadcastMessage(playerIdEditingPermission.get(player));
+                        config.set("Balloons." + playerIdEditing.get(player) + ".permission", playerIdEditingPermission.get(player));
+
+                        config.save(file);
+
+                        playerIdEditingPermission.remove(player);
+                        playerIdEditing.remove(player);
+                        playerItemEditing.remove(player);
+                        Balloons.reload();
                     }
-
-                    config.set("Balloons." + playerIdEditing.get(player) + ".displayname", displayname);
-                    Bukkit.broadcastMessage(playerIdEditingPermission.get(player));
-                    config.set("Balloons." + playerIdEditing.get(player) + ".permission", playerIdEditingPermission.get(player));
-
-                    config.save(file);
-
-                    playerIdEditingPermission.remove(player);
-                    playerIdEditing.remove(player);
-                    playerItemEditing.remove(player);
-                    Balloons.reload();
                 }
             }
 

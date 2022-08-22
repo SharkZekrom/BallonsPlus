@@ -1,7 +1,7 @@
-package be.shark_zekrom.inventory;
+package be.shark_zekrom;
 
 import be.shark_zekrom.Main;
-import be.shark_zekrom.commands.Commands;
+import be.shark_zekrom.Commands;
 import be.shark_zekrom.utils.Skulls;
 import be.shark_zekrom.utils.InventoryItems;
 import be.shark_zekrom.utils.SummonBalloons;

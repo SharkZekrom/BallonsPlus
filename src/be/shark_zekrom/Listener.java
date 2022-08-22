@@ -1,4 +1,4 @@
-package be.shark_zekrom.listener;
+package be.shark_zekrom;
 
 import be.shark_zekrom.Main;
 import be.shark_zekrom.utils.Skulls;

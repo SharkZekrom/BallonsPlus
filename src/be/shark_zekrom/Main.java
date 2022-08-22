@@ -1,9 +1,6 @@
 package be.shark_zekrom;
 
-import be.shark_zekrom.commands.Commands;
-import be.shark_zekrom.inventory.Menu;
 import be.shark_zekrom.utils.Distance;
-import be.shark_zekrom.listener.Listener;
 import be.shark_zekrom.utils.Skulls;
 import be.shark_zekrom.utils.SummonBalloons;
 import org.bukkit.Bukkit;

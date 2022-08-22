@@ -307,7 +307,7 @@ public class Menu implements Listener {
                     editInventory(event.getPlayer(), playerIdEditing.get(event.getPlayer()), playerItemEditing.get(event.getPlayer()));
                 }
             }.runTask(Main.getInstance());
-            event.getPlayer().sendMessage("§b[Balloon+] permission set.");
+            event.getPlayer().sendMessage("§b[Balloons+] Permission set.");
         }
 
 
@@ -321,7 +321,7 @@ public class Menu implements Listener {
                     createInventory(event.getPlayer());
                 }
             }.runTask(Main.getInstance());
-            event.getPlayer().sendMessage("§b[Balloon+] permission set.");
+            event.getPlayer().sendMessage("§b[Balloons+] Permission set.");
         }
     }
 
@@ -349,7 +349,7 @@ public class Menu implements Listener {
                     }
                 }
 
-                if (slot == 4 && playerIdCreatePermission.containsKey(player)) {
+                if (slot == 4 && playerIdCreate.containsKey(player)) {
                     event.setCancelled(true);
                     if (event.getView().getTopInventory().getItem(2) != null) {
                         player.closeInventory();

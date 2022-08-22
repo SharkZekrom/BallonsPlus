@@ -105,11 +105,20 @@ public class Main extends JavaPlugin {
         config.addDefault("BalloonsMenuClickToSummon", "§6» §eClick to summon");
         config.addDefault("BalloonsMenuNoPermissionToSummon", "§cNo permission to summon");
         config.addDefault("CantOpenInventory", "§bYou can't open the inventory inside a vehicle.");
+        config.addDefault("BalloonsMenuEditing", "Balloon editing");
+        config.addDefault("BalloonsMenuCreating", "Balloon creating");
+        config.addDefault("BalloonsMenuPermission", "§ePermission");
+        config.addDefault("BalloonsEnterPermission", "§bEnter permission.");
+        config.addDefault("BalloonsPermissionSet", "§bPermission set.");
+        config.addDefault("BalloonsEnterPermissionTimeOut", "§cTime out.");
+        config.addDefault("BalloonsMenuEditPermission", "§7Click to edit the permission of this balloon");
+        config.addDefault("BalloonsMenuCurrentPermission", "§7Current: ");
+        config.addDefault("BalloonsMenuSave", "§aSave");
 
         if (config.get("Balloons") == null) {
-            config.set("Balloons.shark_zekrom.permission", "Ballons+.shark_zekrom");
-            config.set("Balloons.shark_zekrom.displayname", "§eshark_zekrom");
-            config.set("Balloons.shark_zekrom.head", "ewogICJ0aW1lc3RhbXAiIDogMTYyNzA1NDA1Mjg5MCwKICAicHJvZmlsZUlkIiA6ICIzMzNhMjQ3ODk3MTE0MDA2YTE3ZDFmOTU4ZjhkMDZmMSIsCiAgInByb2ZpbGVOYW1lIiA6ICJzaGFya196ZWtyb20iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDBjNzAyODQyZTc0MDM4ODA0YzYzNDUwZTU4YzI4ZTgwOGJjNmFiY2I1M2EwZjI0NTRjN2FkMmRkMDUwNmFhMyIKICAgIH0KICB9Cn0=");
+            config.set("Balloons.head.permission", "Ballons+.shark_zekrom");
+            config.set("Balloons.head.displayname", "§eshark_zekrom");
+            config.set("Balloons.head.head", "ewogICJ0aW1lc3RhbXAiIDogMTYyNzA1NDA1Mjg5MCwKICAicHJvZmlsZUlkIiA6ICIzMzNhMjQ3ODk3MTE0MDA2YTE3ZDFmOTU4ZjhkMDZmMSIsCiAgInByb2ZpbGVOYW1lIiA6ICJzaGFya196ZWtyb20iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDBjNzAyODQyZTc0MDM4ODA0YzYzNDUwZTU4YzI4ZTgwOGJjNmFiY2I1M2EwZjI0NTRjN2FkMmRkMDUwNmFhMyIKICAgIH0KICB9Cn0=");
 
             config.set("Balloons.item.permission", "Ballons+.item");
             config.set("Balloons.item.item", "DIAMOND_HOE");

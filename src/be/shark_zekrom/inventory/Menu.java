@@ -181,7 +181,7 @@ public class Menu implements Listener {
     }
 
     public static void editInventory(Player player, String id, ItemStack balloon) {
-        Inventory inventory = Bukkit.createInventory(null, InventoryType.HOPPER, "Balloon Editing");
+        Inventory inventory = Bukkit.createInventory(null, InventoryType.HOPPER, Main.getInstance().getConfig().getString("BalloonsMenuEditing"));
         player.openInventory(inventory);
 
         for (int i = 0; i < 4; i++) {
@@ -195,7 +195,7 @@ public class Menu implements Listener {
 
         ItemStack item = new ItemStack(Material.GREEN_STAINED_GLASS_PANE, 1);
         ItemMeta itemmeta = item.getItemMeta();
-        itemmeta.setDisplayName("§aSave");
+        itemmeta.setDisplayName(Main.getInstance().getConfig().getString("BalloonsMenuSave"));
         item.setItemMeta(itemmeta);
         inventory.setItem(4, item);
 
@@ -206,8 +206,8 @@ public class Menu implements Listener {
 
         ItemStack permission = new ItemStack(Material.OAK_SIGN, 1);
         ItemMeta permissionMeta = permission.getItemMeta();
-        permissionMeta.setDisplayName("§ePermission");
-        permissionMeta.setLore(Arrays.asList("§7Click to edit the permission","§7of this balloon"," ", "§7Current: " + playerIdEditingPermission.get(player)));
+        permissionMeta.setDisplayName(Main.getInstance().getConfig().getString("BalloonsMenuPermission"));
+        permissionMeta.setLore(Arrays.asList(Main.getInstance().getConfig().getString("BalloonsMenuEditPermission"), Main.getInstance().getConfig().getString("BalloonsMenuCurrentPermission") + playerIdEditingPermission.get(player)));
         permission.setItemMeta(permissionMeta);
         inventory.setItem(1, permission);
 
@@ -217,13 +217,13 @@ public class Menu implements Listener {
 
     public static void editInventoryPermission(Player player) {
 
-        player.sendMessage("§b[Balloons+] Enter permission.");
+        player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("BalloonsEnterPermission"));
         new BukkitRunnable() {
             @Override
             public void run() {
                 if (playerIdEditingPermissionBoolean.containsKey(player)) {
                     playerIdEditingPermissionBoolean.remove(player);
-                    player.sendMessage("§b[Balloons+] §cTime out.");
+                    player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("BalloonsEnterPermissionTimeOut"));
                 }
             }
         }.runTaskLater(Main.getInstance(), 20 * 30);
@@ -232,7 +232,7 @@ public class Menu implements Listener {
 
 
     public static void createInventory(Player player) {
-        Inventory inventory = Bukkit.createInventory(null, InventoryType.HOPPER, "Balloon Create");
+        Inventory inventory = Bukkit.createInventory(null, InventoryType.HOPPER, Main.getInstance().getConfig().getString("BalloonsMenuCreating"));
         player.openInventory(inventory);
 
         for (int i = 0; i < 4; i++) {
@@ -246,7 +246,7 @@ public class Menu implements Listener {
 
         ItemStack item = new ItemStack(Material.GREEN_STAINED_GLASS_PANE, 1);
         ItemMeta itemmeta = item.getItemMeta();
-        itemmeta.setDisplayName("§aSave");
+        itemmeta.setDisplayName(Main.getInstance().getConfig().getString("BalloonsMenuSave"));
         item.setItemMeta(itemmeta);
         inventory.setItem(4, item);
 
@@ -261,15 +261,17 @@ public class Menu implements Listener {
         if (playerIdCreatePermission.get(player) != null) {
             ItemStack permission = new ItemStack(Material.OAK_SIGN, 1);
             ItemMeta permissionMeta = permission.getItemMeta();
-            permissionMeta.setDisplayName("§ePermission");
-            permissionMeta.setLore(Arrays.asList("§7Click to edit the permission","§7of this balloon"," ", "§7Current: " + playerIdCreatePermission.get(player)));
+            permissionMeta.setDisplayName(Main.getInstance().getConfig().getString("BalloonsMenuPermission"));
+            permissionMeta.setLore(Arrays.asList(Main.getInstance().getConfig().getString("BalloonsMenuEditPermission"), Main.getInstance().getConfig().getString("BalloonsMenuCurrentPermission") + playerIdCreatePermission.get(player)));
             permission.setItemMeta(permissionMeta);
             inventory.setItem(1, permission);
         } else {
             ItemStack permission = new ItemStack(Material.OAK_SIGN, 1);
             ItemMeta permissionMeta = permission.getItemMeta();
-            permissionMeta.setDisplayName("§ePermission");
-            permissionMeta.setLore(Arrays.asList("§7Click to edit the permission","§7of this balloon"," ", "§7Current: "));
+            permissionMeta.setDisplayName(Main.getInstance().getConfig().getString("BalloonsMenuPermission"));
+            permissionMeta.setLore(Arrays.asList(Main.getInstance().getConfig().getString("BalloonsMenuEditPermission"), Main.getInstance().getConfig().getString("BalloonsMenCurrentPermission")));
+
+
             permission.setItemMeta(permissionMeta);
             inventory.setItem(1, permission);
         }
@@ -281,13 +283,13 @@ public class Menu implements Listener {
 
     public static void createInventoryPermission(Player player) {
 
-        player.sendMessage("§b[Balloons+] Enter permission.");
+        player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("BalloonsEnterPermission"));
         new BukkitRunnable() {
             @Override
             public void run() {
                 if (playerIdCreatePermissionBoolean.containsKey(player)) {
                     playerIdCreatePermissionBoolean.remove(player);
-                    player.sendMessage("§b[Balloons+] §cTime out.");
+                    player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("BalloonsEnterPermissionTimeOut"));
                 }
             }
         }.runTaskLater(Main.getInstance(), 20 * 30);
@@ -307,7 +309,7 @@ public class Menu implements Listener {
                     editInventory(event.getPlayer(), playerIdEditing.get(event.getPlayer()), playerItemEditing.get(event.getPlayer()));
                 }
             }.runTask(Main.getInstance());
-            event.getPlayer().sendMessage("§b[Balloons+] Permission set.");
+            event.getPlayer().sendMessage(Main.prefix + Main.getInstance().getConfig().getString("BalloonsPermissionSet"));
         }
 
 
@@ -321,7 +323,7 @@ public class Menu implements Listener {
                     createInventory(event.getPlayer());
                 }
             }.runTask(Main.getInstance());
-            event.getPlayer().sendMessage("§b[Balloons+] Permission set.");
+            event.getPlayer().sendMessage(Main.prefix + Main.getInstance().getConfig().getString("BalloonsPermissionSet"));
         }
     }
 
@@ -333,7 +335,7 @@ public class Menu implements Listener {
         int slot = event.getSlot();
 
 
-        if (event.getView().getTitle().equalsIgnoreCase("Balloon Create")) {
+        if (event.getView().getTitle().equalsIgnoreCase(Main.getInstance().getConfig().getString("BalloonsMenuCreate"))) {
             if (event.getClickedInventory().getType() != InventoryType.PLAYER) {
                 if (slot == 0 || slot == 3) {
                     event.setCancelled(true);
@@ -393,7 +395,7 @@ public class Menu implements Listener {
             }
         }
 
-        if (event.getView().getTitle().equalsIgnoreCase("Balloon Editing")) {
+        if (event.getView().getTitle().equalsIgnoreCase(Main.getInstance().getConfig().getString("BalloonsMenuEditing"))) {
             if (event.getClickedInventory().getType() != InventoryType.PLAYER) {
                 if (slot == 0 || slot == 3) {
                     event.setCancelled(true);

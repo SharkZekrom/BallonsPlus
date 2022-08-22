@@ -36,6 +36,7 @@ public class Balloons implements CommandExecutor, TabExecutor {
                 player.sendMessage(ChatColor.AQUA + "/balloons+ reload");
                 player.sendMessage(ChatColor.AQUA + "/balloons+ inventory");
                 player.sendMessage(ChatColor.AQUA + "/balloons+ spawn <name>");
+                player.sendMessage(ChatColor.AQUA + "/balloons+ create <name>");
                 player.sendMessage(ChatColor.AQUA + "/balloons+ remove");
             }
             if (args[0].equalsIgnoreCase("remove")) {

@@ -124,19 +124,6 @@ public class Listener implements org.bukkit.event.Listener {
         }
     }
 
-
-    @EventHandler
-    public void onSit(EntitySitEvent event) {
-
-        if (event.getEntity() instanceof Player) {
-            Player player = (Player) event.getEntity();
-            if (SummonBalloons.balloons.containsKey(player)) {
-                SummonBalloons.removeBalloon(player);
-
-            }
-        }
-    }
-
     @EventHandler
     public void onDismount(EntityDismountEvent event) {
         if (event.getEntity() instanceof Player) {

@@ -1,9 +1,7 @@
 package be.shark_zekrom;
 
-import be.shark_zekrom.Main;
 import be.shark_zekrom.utils.Skulls;
 import be.shark_zekrom.utils.SummonBalloons;
-import dev.geco.gsit.api.event.EntitySitEvent;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;

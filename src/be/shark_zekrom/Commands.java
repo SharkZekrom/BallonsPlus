@@ -42,7 +42,7 @@ public class Commands implements CommandExecutor, TabExecutor {
                     SummonBalloons.removeBalloon(player);
                     SummonBalloons.playerBalloons.remove(player);
 
-                    player.sendMessage(Main.getInstance().getConfig().getString("Prefix") + Main.getInstance().getConfig().getString("BalloonsRemoved"));
+                    player.sendMessage(Main.getInstance().getConfig().getString("BalloonPrefix") + Main.getInstance().getConfig().getString("BalloonsRemoved"));
 
                 }
             }

@@ -56,7 +56,7 @@ public class Menu implements Listener {
             ArrayList<String> list = new ArrayList<>();
             ConfigurationSection cs = config.getConfigurationSection("Balloons");
             for (String key : cs.getKeys(false)) {
-                if (player.hasPermission("Balloons." + key + ".permission")) {
+                if (player.hasPermission(config.getString("Balloons." + key + ".permission"))) {
                     list.add(key);
                 }
             }

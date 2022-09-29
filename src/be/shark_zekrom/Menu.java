@@ -512,6 +512,7 @@ public class Menu implements Listener {
                             if (event.getCurrentItem().getType().equals(Material.BARRIER)) {
                                 player.closeInventory();
                                 SummonBalloons.removeBalloon(player);
+                                SummonBalloons.playerBalloons.remove(player);
                             }
 
                             if (slot == 48) {

@@ -57,7 +57,6 @@ public class SummonBalloons {
         Parrot parrot = SummonBalloons.balloons.get(player);
         SummonBalloons.balloons.remove(player);
         parrot.remove();
-
     }
 
     public static void removeAllBalloon() {

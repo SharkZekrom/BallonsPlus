@@ -2,6 +2,8 @@ package be.shark_zekrom;
 
 import be.shark_zekrom.utils.Skulls;
 import be.shark_zekrom.utils.SummonBalloons;
+import com.mojang.datafixers.types.templates.Sum;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -22,6 +24,8 @@ import java.util.List;
 
 public class Commands implements CommandExecutor, TabExecutor {
 
+
+
     @Override
     public boolean onCommand(CommandSender commandSender, Command cmd, String string, String[] args) {
 
@@ -35,6 +39,7 @@ public class Commands implements CommandExecutor, TabExecutor {
                 player.sendMessage(ChatColor.AQUA + "/balloons+ inventory");
                 player.sendMessage(ChatColor.AQUA + "/balloons+ spawn <name>");
                 player.sendMessage(ChatColor.AQUA + "/balloons+ create <name>");
+                player.sendMessage(ChatColor.AQUA + "/balloons+ set <player> <balloon>");
                 player.sendMessage(ChatColor.AQUA + "/balloons+ remove");
             }
             if (args[0].equalsIgnoreCase("remove")) {
@@ -118,6 +123,25 @@ public class Commands implements CommandExecutor, TabExecutor {
                 }
             }
 
+            if (args[0].equalsIgnoreCase("unequip")) {
+                if (player.hasPermission("balloons+.remove")) {
+                    Player target = Bukkit.getPlayer(args[1]);
+                    if (target != null) {
+                        SummonBalloons.removeBalloon(target);
+                        player.sendMessage(Main.getInstance().getConfig().getString("Prefix") + Main.getInstance().getConfig().getString("BalloonRemovedForPlayer"));
+                    }
+                }
+            }
+            if (args[0].equalsIgnoreCase("set")) {
+                if (player.hasPermission("balloons+.set")) {
+                    Player target = Bukkit.getPlayer(args[1]);
+                    if (target != null) {
+                        //SUMMON BALLOON
+                        player.sendMessage(Main.getInstance().getConfig().getString("Prefix") + Main.getInstance().getConfig().getString("BalloonSetForPlayer"));
+                    }
+                }
+            }
+
         } else {
             if (player.isInsideVehicle()) {
                 player.sendMessage(Main.getInstance().getConfig().getString("Prefix") + Main.getInstance().getConfig().getString("CantOpenInventory"));
@@ -156,6 +180,7 @@ public class Commands implements CommandExecutor, TabExecutor {
             arguments.add("inventory");
             arguments.add("spawn");
             arguments.add("remove");
+            arguments.add("set");
             if (sender.hasPermission("balloon+.*")){
                 arguments.add("reload");
                 arguments.add("create");

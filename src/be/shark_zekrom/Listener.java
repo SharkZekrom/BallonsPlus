@@ -2,6 +2,8 @@ package be.shark_zekrom;
 
 import be.shark_zekrom.utils.Skulls;
 import be.shark_zekrom.utils.SummonBalloons;
+import dev.geco.gsit.events.PlayerSitEvents;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -20,15 +22,16 @@ import org.spigotmc.event.entity.EntityMountEvent;
 
 public class Listener implements org.bukkit.event.Listener {
 
+
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
         Entity entity = event.getEntity();
-        if (SummonBalloons.balloons.containsValue(entity)) {
-            event.setCancelled(true);
+        if (entity instanceof Parrot parrot) {
+            if (SummonBalloons.balloons.containsValue(parrot)) {
+                event.setCancelled(true);
+            }
         }
     }
-
-
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
@@ -88,9 +91,7 @@ public class Listener implements org.bukkit.event.Listener {
 
     @EventHandler
     public void onUnLeash(PlayerUnleashEntityEvent event) {
-        Player player = event.getPlayer();
-        if (event.getEntity() instanceof Parrot) {
-            Parrot parrot = (Parrot) event.getEntity();
+        if (event.getEntity() instanceof Parrot parrot) {
             if (SummonBalloons.balloons.containsValue(parrot)) {
                 event.setCancelled(true);
             }
@@ -101,8 +102,7 @@ public class Listener implements org.bukkit.event.Listener {
     public void onInteract(PlayerInteractAtEntityEvent event) {
         Player player = event.getPlayer();
         Entity entity = event.getRightClicked();
-        if (entity instanceof ArmorStand) {
-            ArmorStand as = (ArmorStand) entity;
+        if (entity instanceof ArmorStand as) {
             if (SummonBalloons.as.containsValue(as)) {
                 event.setCancelled(true);
             }
@@ -112,9 +112,7 @@ public class Listener implements org.bukkit.event.Listener {
 
     @EventHandler
     public void onMount(EntityMountEvent event) {
-
-        if (event.getEntity() instanceof Player) {
-            Player player = (Player) event.getEntity();
+        if (event.getEntity() instanceof Player player) {
             if (SummonBalloons.balloons.containsKey(player)) {
                 SummonBalloons.removeBalloon(player);
 
@@ -124,22 +122,27 @@ public class Listener implements org.bukkit.event.Listener {
 
     @EventHandler
     public void onDismount(EntityDismountEvent event) {
-        if (event.getEntity() instanceof Player) {
-            Player player = (Player) event.getEntity();
+        if (event.getEntity() instanceof Player player) {
 
 
             if (SummonBalloons.playerBalloons.containsKey(player)) {
-                if (Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".item") != null) {
-                    ItemStack itemStack = new ItemStack(Material.valueOf(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".item")));
-                    ItemMeta itemMeta = itemStack.getItemMeta();
-                    itemMeta.setCustomModelData(Main.getInstance().getConfig().getInt("Balloons." + SummonBalloons.playerBalloons.get(player) + ".custommodeldata"));
-                    itemStack.setItemMeta(itemMeta);
+                if (SummonBalloons.as.get(player) == null) {
 
-                    SummonBalloons.summonBalloon(player, itemStack);
-                    SummonBalloons.as.get(player).getEquipment().setHelmet(itemStack);
-                } else {
-                    SummonBalloons.summonBalloon(player, Skulls.createSkull(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".head")));
 
+                    if (Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".item") != null) {
+
+                        ItemStack itemStack = new ItemStack(Material.valueOf(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".item")));
+                        ItemMeta itemMeta = itemStack.getItemMeta();
+                        itemMeta.setCustomModelData(Main.getInstance().getConfig().getInt("Balloons." + SummonBalloons.playerBalloons.get(player) + ".custommodeldata"));
+                        itemStack.setItemMeta(itemMeta);
+
+                        SummonBalloons.summonBalloon(player, itemStack);
+                        SummonBalloons.as.get(player).getEquipment().setHelmet(itemStack);
+                    } else {
+
+                        SummonBalloons.summonBalloon(player, Skulls.createSkull(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".head")));
+
+                    }
                 }
             }
         }

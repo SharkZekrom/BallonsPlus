@@ -17,6 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class Main extends JavaPlugin {
 
+
     private static Main instance;
 
     public static Main getInstance() {
@@ -111,7 +112,8 @@ public class Main extends JavaPlugin {
         config.addDefault("BalloonsMenuEditPermission", "§7Click to edit the permission of this balloon");
         config.addDefault("BalloonsMenuCurrentPermission", "§7Current: ");
         config.addDefault("BalloonsMenuSave", "§aSave");
-
+        config.addDefault("BalloonRemovedForPlayer", "§cThe balloon has been removed.");
+        config.addDefault("BalloonSetForPlayer", "§eThe balloon has been set.");
         if (config.get("Balloons") == null) {
             config.set("Balloons.head.permission", "Ballons+.shark_zekrom");
             config.set("Balloons.head.displayname", "§eshark_zekrom");

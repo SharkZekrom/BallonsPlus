@@ -24,7 +24,6 @@ import java.util.List;
 public class Commands implements CommandExecutor, TabExecutor {
 
 
-
     @Override
     public boolean onCommand(CommandSender commandSender, Command cmd, String string, String[] args) {
 
@@ -43,7 +42,7 @@ public class Commands implements CommandExecutor, TabExecutor {
             }
             if (args[0].equalsIgnoreCase("remove")) {
                 if (SummonBalloons.balloons.containsKey(player)) {
-                    SummonBalloons.removeBalloon(player);
+                    SummonBalloons.removeBalloonWithGiveItem(player);
                     SummonBalloons.playerBalloons.remove(player);
 
                     player.sendMessage(Main.getInstance().getConfig().getString("BalloonPrefix") + Main.getInstance().getConfig().getString("BalloonsRemoved"));
@@ -74,8 +73,21 @@ public class Commands implements CommandExecutor, TabExecutor {
             }
 
 
-            } else if (args.length > 1) {
+        } else if (args.length > 1) {
+            if (args[0].equalsIgnoreCase("recipes")) {
+                if (args[1].equalsIgnoreCase("create")) {
+                    RecipesGui.recipeCreateGui(player);
+                }
+                if (args[1].equalsIgnoreCase("list")) {
+                    RecipesGui.recipeListGui(player, 0);
+                }
+                if (args[1].equalsIgnoreCase("remove")) {
 
+                }
+                if (args[1].equalsIgnoreCase("reload")) {
+                    Recipes.loadRecipes();
+                }
+            }
             if (args[0].equalsIgnoreCase("spawn")) {
                 if (Main.BalloonWithItemInInventory) {
                     player.sendMessage("this command can only use if BalloonWithItemInInventory is false");
@@ -103,11 +115,11 @@ public class Commands implements CommandExecutor, TabExecutor {
                                     ItemMeta itemMeta = itemStack.getItemMeta();
                                     itemMeta.setCustomModelData(config.getInt("Balloons." + args[1] + ".custommodeldata"));
                                     itemStack.setItemMeta(itemMeta);
-                                    SummonBalloons.summonBalloon(player, itemStack,100.0);
+                                    SummonBalloons.summonBalloon(player, itemStack, 100.0);
 
 
                                 } else {
-                                    SummonBalloons.summonBalloon(player, Skulls.createSkull(config.getString("Balloons." + args[1] + ".head")),100.0);
+                                    SummonBalloons.summonBalloon(player, Skulls.createSkull(config.getString("Balloons." + args[1] + ".head")), 100.0);
 
                                 }
 
@@ -175,7 +187,6 @@ public class Commands implements CommandExecutor, TabExecutor {
     }
 
 
-
     public static void reload() {
         try {
             Main.getInstance().getConfig().load(new File(Main.getInstance().getDataFolder(), "config.yml"));
@@ -193,6 +204,7 @@ public class Commands implements CommandExecutor, TabExecutor {
         }
 
     }
+
     @Override
     public List<String> onTabComplete(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
         List<String> arguments = new ArrayList<>();
@@ -202,7 +214,7 @@ public class Commands implements CommandExecutor, TabExecutor {
             arguments.add("spawn");
             arguments.add("remove");
             arguments.add("set");
-            if (sender.hasPermission("balloon+.*")){
+            if (sender.hasPermission("balloon+.*")) {
                 arguments.add("reload");
                 arguments.add("create");
             }

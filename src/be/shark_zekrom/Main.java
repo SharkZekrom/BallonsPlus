@@ -15,6 +15,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Arrays;
+
 public class Main extends JavaPlugin {
 
 
@@ -28,7 +30,7 @@ public class Main extends JavaPlugin {
     public static boolean BalloonDoesNotDeflate = true;
     public static boolean BalloonWithItemInInventory = false;
     public static double NumberOfPercentageLostByHour = 0;
-
+    public static double NumberOfPourcentageInflateByHour = 0;
     public static String prefix;
 
 
@@ -39,6 +41,7 @@ public class Main extends JavaPlugin {
 
         pm.registerEvents(new Listener(), this);
         pm.registerEvents(new Menu(), this);
+        pm.registerEvents(new RecipesGui(), this);
 
         for (World world : Bukkit.getWorlds()) {
             for (Entity entity : world.getEntities()) {
@@ -78,10 +81,10 @@ public class Main extends JavaPlugin {
                             ItemMeta itemMeta = itemStack.getItemMeta();
                             itemMeta.setCustomModelData(Main.getInstance().getConfig().getInt("Balloons." + SummonBalloons.playerBalloons.get(player) + ".custommodeldata"));
                             itemStack.setItemMeta(itemMeta);
-                            SummonBalloons.summonBalloon(player, itemStack,SummonBalloons.percentage.get(player));
+                            SummonBalloons.summonBalloon(player, itemStack, SummonBalloons.percentage.get(player));
 
                         } else {
-                            SummonBalloons.summonBalloon(player, Skulls.createSkull(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".head")),SummonBalloons.percentage.get(player));
+                            SummonBalloons.summonBalloon(player, Skulls.createSkull(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".head")), SummonBalloons.percentage.get(player));
 
                         }
                     }
@@ -97,6 +100,7 @@ public class Main extends JavaPlugin {
         config.addDefault("BalloonDoesNotDeflate", true);
         config.addDefault("BalloonWithItemInInventory", false);
         config.addDefault("NumberOfPourcentageLostByHour", 1.0);
+        config.addDefault("NumberOfPourcentageInflateByHour", 1.0);
         config.addDefault("BalloonPrefix", "§b[Balloons+] ");
         config.addDefault("BalloonReload", "§bSuccessfully reloaded!");
         config.addDefault("NoBalloonsFound", "§bNo balloons found with this name.");
@@ -132,6 +136,8 @@ public class Main extends JavaPlugin {
             config.set("Balloons.item.displayname", "§eitem");
 
         }
+        config.addDefault("Balloon.Recipes", null);
+
 
         config.options().copyDefaults(true);
         saveConfig();
@@ -144,10 +150,42 @@ public class Main extends JavaPlugin {
         BalloonWithItemInInventory = config.getBoolean("BalloonWithItemInInventory");
         showOnlyBallonsWithPermission = config.getBoolean("ShowOnlyBalloonsWithPermission");
         NumberOfPercentageLostByHour = config.getInt("NumberOfPourcentageLostByHour");
+        NumberOfPourcentageInflateByHour = config.getInt("NumberOfPourcentageInflateByHour");
         prefix = config.getString("BalloonPrefix");
 
         Bukkit.getLogger().info("Balloons+ enabled !");
+        Recipes.loadRecipes();
 
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    for (int i = 0; i < 36; i++) {
+                        ItemStack itemStack = player.getInventory().getItem(i);
+                        if (itemStack != null) {
+                            if (itemStack.hasItemMeta()) {
+                                if (itemStack.getItemMeta().hasDisplayName()) {
+                                    if (itemStack.getItemMeta().getDisplayName().contains("§eBalloons+ : ")) {
+                                        String percentage = itemStack.getItemMeta().getLore().get(0).split(" : ")[1].replace("%", "");
+                                        double newPercentage = Double.parseDouble(percentage) + (NumberOfPourcentageInflateByHour / 60 / 60);
+                                        if (newPercentage > 100) {
+                                            newPercentage = 100;
+                                        }
+
+                                        ItemStack clone = itemStack.clone();
+                                        ItemMeta cloneMeta = clone.getItemMeta();
+                                        cloneMeta.setLore(Arrays.asList("§6Percentage : " + newPercentage + "%"));
+                                        clone.setItemMeta(cloneMeta);
+                                        player.getInventory().setItem(i, clone);
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(getInstance(), 0, 20);
     }
 
     @Override

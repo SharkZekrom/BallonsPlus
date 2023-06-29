@@ -161,6 +161,15 @@ public class Listener implements org.bukkit.event.Listener {
         }
     }
 
+    @EventHandler
+    public void onPlayerInteractAtEntityEvent(PlayerInteractAtEntityEvent event) {
+        if (event.getRightClicked() instanceof Parrot parrot) {
+            if (SummonBalloons.balloons.containsValue(parrot)) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
 
     @EventHandler
     public void onPlayerClicks(PlayerInteractEvent event) {
@@ -169,34 +178,31 @@ public class Listener implements org.bukkit.event.Listener {
         Action action = event.getAction();
         ItemStack item = event.getItem();
 
+        if (!Main.BalloonWithItemInInventory) return;
+
         if (!player.isInsideVehicle()) {
 
             if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-                if (item != null) {
-                    if (item.hasItemMeta()) {
-                        if (item.getItemMeta().hasDisplayName()) {
-                            if (item.getItemMeta().getDisplayName().contains("§eBalloons+ : ")) {
+                if (item.hasItemMeta()) {
+                    if (item.getItemMeta().hasDisplayName()) {
+                        if (item.getItemMeta().getDisplayName().contains("§eBalloons+ : ")) {
+                            event.setCancelled(true);
+                            if (!SummonBalloons.balloons.containsKey(player)) {
+
                                 SummonBalloons.playerBalloons.put(player, item.getItemMeta().getDisplayName().split(" : ")[1]);
-                                String[] balloonName = item.getItemMeta().getDisplayName().split(" : ");
                                 String percentageBalloon = item.getItemMeta().getLore().get(0).split(" : ")[1].replace("%", "");
-                                if (player.getInventory().getItemInMainHand().getType().equals(Material.PLAYER_HEAD)) {
-                                    SummonBalloons.summonBalloon(player, Skulls.createSkull(Main.getInstance().getConfig().getString("Balloons." + balloonName[1] + ".head")), Double.parseDouble(percentageBalloon));
 
-                                } else {
-                                    ItemStack itemStack = new ItemStack(Material.valueOf(Main.getInstance().getConfig().getString("Balloons." + balloonName[1] + ".item")));
-                                    ItemMeta itemMeta = itemStack.getItemMeta();
-                                    itemMeta.setCustomModelData(Main.getInstance().getConfig().getInt("Balloons." + balloonName[1] + ".custommodeldata"));
-                                    itemStack.setItemMeta(itemMeta);
-
-                                    SummonBalloons.summonBalloon(player, itemStack, Double.parseDouble(percentageBalloon));
+                                if (Double.parseDouble(percentageBalloon) > 0.0) {
+                                    SummonBalloons.summonBalloon(player, player.getEquipment().getItemInMainHand(), Double.parseDouble(percentageBalloon));
+                                    player.getEquipment().setItem(EquipmentSlot.HAND, null);
 
                                 }
-                                player.getEquipment().setItem(EquipmentSlot.HAND, null);
                             }
+
                         }
                     }
-
                 }
+
             }
         }
     }

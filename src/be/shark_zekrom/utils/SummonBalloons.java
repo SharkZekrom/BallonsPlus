@@ -61,7 +61,9 @@ public class SummonBalloons {
                         as1.setCustomName("§c" + Math.round(remainingPourcentage) + "%");
                         percentage.put(player,remainingPourcentage);
                     } else {
-                        removeBalloon(player);
+                        percentage.put(player,0.0);
+
+                        removeBalloonWithGiveItem(player);
                         this.cancel();
                     }
                 }
@@ -107,13 +109,16 @@ public class SummonBalloons {
         parrot.remove();
 
         if (!Main.BalloonDoesNotDeflate) {
-            percentage.remove(player);
             deflateTask.get(player).cancel();
             deflateTask.remove(player);
         }
     }
 
     public static void removeAllBalloon() {
+        for (Player player : SummonBalloons.balloons.keySet()) {
+            removeBalloonWithGiveItem(player);
+        }
+
         for (Parrot parrot : SummonBalloons.balloons.values()) {
             parrot.remove();
         }

@@ -2,18 +2,16 @@ package be.shark_zekrom;
 
 import be.shark_zekrom.utils.Skulls;
 import be.shark_zekrom.utils.SummonBalloons;
-import dev.geco.gsit.events.PlayerSitEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.player.PlayerUnleashEntityEvent;
+import org.bukkit.event.player.*;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -21,7 +19,6 @@ import org.spigotmc.event.entity.EntityDismountEvent;
 import org.spigotmc.event.entity.EntityMountEvent;
 
 public class Listener implements org.bukkit.event.Listener {
-
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
@@ -32,6 +29,7 @@ public class Listener implements org.bukkit.event.Listener {
             }
         }
     }
+
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
@@ -51,7 +49,7 @@ public class Listener implements org.bukkit.event.Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    SummonBalloons.summonBalloon(player, item);
+                    SummonBalloons.summonBalloon(player, item, SummonBalloons.percentage.get(player));
 
                 }
             }.runTaskLater(Main.getInstance(), 10L);
@@ -63,7 +61,11 @@ public class Listener implements org.bukkit.event.Listener {
     public void onDisconnect(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         if (SummonBalloons.balloons.containsKey(player)) {
-            SummonBalloons.removeBalloon(player);
+            if (Main.BalloonWithItemInInventory) {
+                SummonBalloons.removeBalloonWithGiveItem(player);
+            } else {
+                SummonBalloons.removeBalloon(player);
+            }
         }
     }
 
@@ -71,7 +73,11 @@ public class Listener implements org.bukkit.event.Listener {
     public void onDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
         if (SummonBalloons.balloons.containsKey(player)) {
-            SummonBalloons.removeBalloon(player);
+            if (Main.BalloonWithItemInInventory) {
+                SummonBalloons.removeBalloonWithGiveItem(player);
+            } else {
+                SummonBalloons.removeBalloon(player);
+            }
         }
     }
 
@@ -114,7 +120,11 @@ public class Listener implements org.bukkit.event.Listener {
     public void onMount(EntityMountEvent event) {
         if (event.getEntity() instanceof Player player) {
             if (SummonBalloons.balloons.containsKey(player)) {
-                SummonBalloons.removeBalloon(player);
+                if (Main.BalloonWithItemInInventory) {
+                    SummonBalloons.removeBalloonWithGiveItem(player);
+                } else {
+                    SummonBalloons.removeBalloon(player);
+                }
 
             }
         }
@@ -126,28 +136,70 @@ public class Listener implements org.bukkit.event.Listener {
 
 
             if (SummonBalloons.playerBalloons.containsKey(player)) {
-                if (SummonBalloons.as.get(player) == null) {
+                if (!Main.BalloonWithItemInInventory) {
+
+                    if (SummonBalloons.as.get(player) == null) {
 
 
-                    if (Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".item") != null) {
+                        if (Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".item") != null) {
 
-                        ItemStack itemStack = new ItemStack(Material.valueOf(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".item")));
-                        ItemMeta itemMeta = itemStack.getItemMeta();
-                        itemMeta.setCustomModelData(Main.getInstance().getConfig().getInt("Balloons." + SummonBalloons.playerBalloons.get(player) + ".custommodeldata"));
-                        itemStack.setItemMeta(itemMeta);
+                            ItemStack itemStack = new ItemStack(Material.valueOf(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".item")));
+                            ItemMeta itemMeta = itemStack.getItemMeta();
+                            itemMeta.setCustomModelData(Main.getInstance().getConfig().getInt("Balloons." + SummonBalloons.playerBalloons.get(player) + ".custommodeldata"));
+                            itemStack.setItemMeta(itemMeta);
 
-                        SummonBalloons.summonBalloon(player, itemStack);
-                        SummonBalloons.as.get(player).getEquipment().setHelmet(itemStack);
-                    } else {
+                            SummonBalloons.summonBalloon(player, itemStack,100.0);
+                            SummonBalloons.as.get(player).getEquipment().setHelmet(itemStack);
+                        } else {
 
-                        SummonBalloons.summonBalloon(player, Skulls.createSkull(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".head")));
+                            SummonBalloons.summonBalloon(player, Skulls.createSkull(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".head")),100.0);
 
+                        }
                     }
                 }
             }
         }
     }
 
+
+    @EventHandler
+    public void onPlayerClicks(PlayerInteractEvent event) {
+
+        Player player = event.getPlayer();
+        Action action = event.getAction();
+        ItemStack item = event.getItem();
+
+        if (!player.isInsideVehicle()) {
+
+            if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
+                if (item != null) {
+                    if (item.hasItemMeta()) {
+                        if (item.getItemMeta().hasDisplayName()) {
+                            if (item.getItemMeta().getDisplayName().contains("§eBalloons+ : ")) {
+                                SummonBalloons.playerBalloons.put(player, item.getItemMeta().getDisplayName().split(" : ")[1]);
+                                String[] balloonName = item.getItemMeta().getDisplayName().split(" : ");
+                                String percentageBalloon = item.getItemMeta().getLore().get(0).split(" : ")[1].replace("%", "");
+                                if (player.getInventory().getItemInMainHand().getType().equals(Material.PLAYER_HEAD)) {
+                                    SummonBalloons.summonBalloon(player, Skulls.createSkull(Main.getInstance().getConfig().getString("Balloons." + balloonName[1] + ".head")), Double.parseDouble(percentageBalloon));
+
+                                } else {
+                                    ItemStack itemStack = new ItemStack(Material.valueOf(Main.getInstance().getConfig().getString("Balloons." + balloonName[1] + ".item")));
+                                    ItemMeta itemMeta = itemStack.getItemMeta();
+                                    itemMeta.setCustomModelData(Main.getInstance().getConfig().getInt("Balloons." + balloonName[1] + ".custommodeldata"));
+                                    itemStack.setItemMeta(itemMeta);
+
+                                    SummonBalloons.summonBalloon(player, itemStack, Double.parseDouble(percentageBalloon));
+
+                                }
+                                player.getEquipment().setItem(EquipmentSlot.HAND, null);
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+    }
 
 
 }

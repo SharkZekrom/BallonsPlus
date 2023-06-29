@@ -1,7 +1,5 @@
 package be.shark_zekrom;
 
-import be.shark_zekrom.Main;
-import be.shark_zekrom.Commands;
 import be.shark_zekrom.utils.Skulls;
 import be.shark_zekrom.utils.InventoryItems;
 import be.shark_zekrom.utils.SummonBalloons;
@@ -496,10 +494,10 @@ public class Menu implements Listener {
                                                 ItemMeta itemMeta = itemStack.getItemMeta();
                                                 itemMeta.setCustomModelData(config.getInt("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".custommodeldata"));
                                                 itemStack.setItemMeta(itemMeta);
-                                                SummonBalloons.summonBalloon(player, itemStack);
+                                                SummonBalloons.summonBalloon(player, itemStack,100.0);
 
                                             } else {
-                                                SummonBalloons.summonBalloon(player, Skulls.createSkull(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".head")));
+                                                SummonBalloons.summonBalloon(player, Skulls.createSkull(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".head")),100.0);
                                             }
                                         }
                                         SummonBalloons.playerBalloons.put(player, (playerlist.get(player).get(slot + pages.get(player))));
@@ -568,10 +566,10 @@ public class Menu implements Listener {
                                                                 ItemMeta itemMeta = itemStack.getItemMeta();
                                                                 itemMeta.setCustomModelData(config.getInt("Balloons." + key + ".custommodeldata"));
                                                                 itemStack.setItemMeta(itemMeta);
-                                                                SummonBalloons.summonBalloon(player, itemStack);
+                                                                SummonBalloons.summonBalloon(player, itemStack,100.0);
 
                                                             } else {
-                                                                SummonBalloons.summonBalloon(player, Skulls.createSkull(config.getString("Balloons." + key + ".head")));
+                                                                SummonBalloons.summonBalloon(player, Skulls.createSkull(config.getString("Balloons." + key + ".head")),100.0);
                                                             }
                                                         }
 
@@ -592,7 +590,7 @@ public class Menu implements Listener {
 
                             if (event.getCurrentItem().getType().equals(Material.BARRIER)) {
                                 player.closeInventory();
-                                SummonBalloons.removeBalloon(player);
+                                SummonBalloons.removeBalloonWithGiveItem(player);
                                 SummonBalloons.playerBalloons.remove(player);
                             }
 

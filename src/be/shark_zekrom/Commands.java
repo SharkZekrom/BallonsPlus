@@ -2,7 +2,6 @@ package be.shark_zekrom;
 
 import be.shark_zekrom.utils.Skulls;
 import be.shark_zekrom.utils.SummonBalloons;
-import com.mojang.datafixers.types.templates.Sum;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -33,7 +32,7 @@ public class Commands implements CommandExecutor, TabExecutor {
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("help")) {
                 player.sendMessage("§b==========[Balloons+]==========");
-                player.sendMessage(ChatColor.AQUA + "");
+                player.sendMessage(String.valueOf(ChatColor.AQUA));
                 player.sendMessage(ChatColor.AQUA + "/balloons+ help");
                 player.sendMessage(ChatColor.AQUA + "/balloons+ reload");
                 player.sendMessage(ChatColor.AQUA + "/balloons+ inventory");
@@ -52,11 +51,15 @@ public class Commands implements CommandExecutor, TabExecutor {
                 }
             }
             if (args[0].equalsIgnoreCase("inventory")) {
-                if (player.isInsideVehicle()) {
-                    player.sendMessage(Main.getInstance().getConfig().getString("Prefix") + Main.getInstance().getConfig().getString("CantOpenInventory"));
-
+                if (Main.BalloonWithItemInInventory) {
+                    player.sendMessage("this command can only use if BalloonWithItemInInventory is false");
                 } else {
-                    Menu.inventory(player, 0);
+                    if (player.isInsideVehicle()) {
+                        player.sendMessage(Main.getInstance().getConfig().getString("Prefix") + Main.getInstance().getConfig().getString("CantOpenInventory"));
+
+                    } else {
+                        Menu.inventory(player, 0);
+                    }
                 }
             }
             if (args[0].equalsIgnoreCase("reload")) {
@@ -74,45 +77,50 @@ public class Commands implements CommandExecutor, TabExecutor {
             } else if (args.length > 1) {
 
             if (args[0].equalsIgnoreCase("spawn")) {
-                File file = new File(Main.getInstance().getDataFolder(), "config.yml");
-                YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-                if (config.getString("Balloons." + args[1]) != null) {
-
-                    String permission = config.getString("Balloons." + args[1] + ".permission");
-                    if (commandSender.hasPermission(permission)) {
-                        if (SummonBalloons.balloons.containsKey(player)) {
-                            if (config.getString("Balloons." + args[1] + ".item") != null) {
-                                ItemStack itemStack = new ItemStack(Material.valueOf(config.getString("Balloons." + args[1] + ".item")));
-                                ItemMeta itemMeta = itemStack.getItemMeta();
-                                itemMeta.setCustomModelData(config.getInt("Balloons." + args[1] + ".custommodeldata"));
-                                itemStack.setItemMeta(itemMeta);
-                                SummonBalloons.as.get(player).getEquipment().setHelmet(itemStack);
-                            } else {
-                                SummonBalloons.as.get(player).getEquipment().setHelmet(Skulls.createSkull(config.getString("Balloons." + args[1] + ".head")));
-
-                            }
-                        } else {
-                            if (config.getString("Balloons." + args[1] + ".item") != null) {
-                                ItemStack itemStack = new ItemStack(Material.valueOf(config.getString("Balloons." + args[1] + ".item")));
-                                ItemMeta itemMeta = itemStack.getItemMeta();
-                                itemMeta.setCustomModelData(config.getInt("Balloons." + args[1] + ".custommodeldata"));
-                                itemStack.setItemMeta(itemMeta);
-                                SummonBalloons.summonBalloon(player, itemStack);
-
-                            } else {
-                                SummonBalloons.summonBalloon(player, Skulls.createSkull(config.getString("Balloons." + args[1] + ".head")));
-
-                            }
-
-                        }
-                        SummonBalloons.playerBalloons.put(player, args[1]);
-                        player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("BalloonsSummoned"));
-
-                    } else {
-                        player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("NoBalloonsPermission"));
-                    }
+                if (Main.BalloonWithItemInInventory) {
+                    player.sendMessage("this command can only use if BalloonWithItemInInventory is false");
                 } else {
-                    player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("NoBalloonsFound"));
+                    File file = new File(Main.getInstance().getDataFolder(), "config.yml");
+                    YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+                    if (config.getString("Balloons." + args[1]) != null) {
+
+                        String permission = config.getString("Balloons." + args[1] + ".permission");
+                        if (commandSender.hasPermission(permission)) {
+                            if (SummonBalloons.balloons.containsKey(player)) {
+                                if (config.getString("Balloons." + args[1] + ".item") != null) {
+                                    ItemStack itemStack = new ItemStack(Material.valueOf(config.getString("Balloons." + args[1] + ".item")));
+                                    ItemMeta itemMeta = itemStack.getItemMeta();
+                                    itemMeta.setCustomModelData(config.getInt("Balloons." + args[1] + ".custommodeldata"));
+                                    itemStack.setItemMeta(itemMeta);
+                                    SummonBalloons.as.get(player).getEquipment().setHelmet(itemStack);
+                                } else {
+                                    SummonBalloons.as.get(player).getEquipment().setHelmet(Skulls.createSkull(config.getString("Balloons." + args[1] + ".head")));
+
+                                }
+                            } else {
+                                if (config.getString("Balloons." + args[1] + ".item") != null) {
+                                    ItemStack itemStack = new ItemStack(Material.valueOf(config.getString("Balloons." + args[1] + ".item")));
+                                    ItemMeta itemMeta = itemStack.getItemMeta();
+                                    itemMeta.setCustomModelData(config.getInt("Balloons." + args[1] + ".custommodeldata"));
+                                    itemStack.setItemMeta(itemMeta);
+                                    SummonBalloons.summonBalloon(player, itemStack,100.0);
+
+
+                                } else {
+                                    SummonBalloons.summonBalloon(player, Skulls.createSkull(config.getString("Balloons." + args[1] + ".head")),100.0);
+
+                                }
+
+                            }
+                            SummonBalloons.playerBalloons.put(player, args[1]);
+                            player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("BalloonsSummoned"));
+
+                        } else {
+                            player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("NoBalloonsPermission"));
+                        }
+                    } else {
+                        player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("NoBalloonsFound"));
+                    }
                 }
             }
 
@@ -149,6 +157,19 @@ public class Commands implements CommandExecutor, TabExecutor {
             } else {
                 Menu.inventory(player, 0);
             }
+            /*
+            if (Main.BalloonWithItemInInventory) {
+                player.sendMessage("The menu can only be opened if BalloonWithItemInInventory is false");
+            } else {
+                if (player.isInsideVehicle()) {
+                    player.sendMessage(Main.getInstance().getConfig().getString("Prefix") + Main.getInstance().getConfig().getString("CantOpenInventory"));
+
+                } else {
+                    Menu.inventory(player, 0);
+                }
+            }
+
+            */
         }
         return false;
     }

@@ -25,6 +25,10 @@ public class Main extends JavaPlugin {
     }
 
     public static boolean showOnlyBallonsWithPermission = false;
+    public static boolean BalloonDoesNotDeflate = true;
+    public static boolean BalloonWithItemInInventory = false;
+    public static double NumberOfPercentageLostByHour = 0;
+
     public static String prefix;
 
 
@@ -74,10 +78,10 @@ public class Main extends JavaPlugin {
                             ItemMeta itemMeta = itemStack.getItemMeta();
                             itemMeta.setCustomModelData(Main.getInstance().getConfig().getInt("Balloons." + SummonBalloons.playerBalloons.get(player) + ".custommodeldata"));
                             itemStack.setItemMeta(itemMeta);
-                            SummonBalloons.summonBalloon(player, itemStack);
+                            SummonBalloons.summonBalloon(player, itemStack,SummonBalloons.percentage.get(player));
 
                         } else {
-                            SummonBalloons.summonBalloon(player, Skulls.createSkull(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".head")));
+                            SummonBalloons.summonBalloon(player, Skulls.createSkull(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".head")),SummonBalloons.percentage.get(player));
 
                         }
                     }
@@ -90,6 +94,9 @@ public class Main extends JavaPlugin {
 
         config.addDefault("ShowOnlyBalloonsWithPermission", false);
         config.addDefault("ShowParticlesBalloonsOnRemove", true);
+        config.addDefault("BalloonDoesNotDeflate", true);
+        config.addDefault("BalloonWithItemInInventory", false);
+        config.addDefault("NumberOfPourcentageLostByHour", 1.0);
         config.addDefault("BalloonPrefix", "§b[Balloons+] ");
         config.addDefault("BalloonReload", "§bSuccessfully reloaded!");
         config.addDefault("NoBalloonsFound", "§bNo balloons found with this name.");
@@ -133,7 +140,10 @@ public class Main extends JavaPlugin {
         ConfigurationSection cs = config.getConfigurationSection("Balloons");
         Menu.list.addAll(cs.getKeys(false));
 
+        BalloonDoesNotDeflate = config.getBoolean("BalloonDoesNotDeflate");
+        BalloonWithItemInInventory = config.getBoolean("BalloonWithItemInInventory");
         showOnlyBallonsWithPermission = config.getBoolean("ShowOnlyBalloonsWithPermission");
+        NumberOfPercentageLostByHour = config.getInt("NumberOfPourcentageLostByHour");
         prefix = config.getString("BalloonPrefix");
 
         Bukkit.getLogger().info("Balloons+ enabled !");

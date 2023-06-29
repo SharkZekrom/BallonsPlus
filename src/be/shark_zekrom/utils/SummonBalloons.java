@@ -28,6 +28,8 @@ public class SummonBalloons {
         parrot.setInvisible(true);
         parrot.setSilent(true);
         parrot.addScoreboardTag("Balloons+");
+        parrot.setInvulnerable(true);
+
 
         balloons.put(player, parrot);
         parrot.setLeashHolder(player);
@@ -40,6 +42,7 @@ public class SummonBalloons {
         as1.setCanPickupItems(false);
         as1.setArms(true);
         as1.setBasePlate(false);
+        as1.setInvulnerable(true);
         as1.getEquipment().setHelmet(item);
         as1.addEquipmentLock(EquipmentSlot.HEAD, ArmorStand.LockType.ADDING_OR_CHANGING);
         as1.addEquipmentLock(EquipmentSlot.CHEST, ArmorStand.LockType.ADDING_OR_CHANGING);

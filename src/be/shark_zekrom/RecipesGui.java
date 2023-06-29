@@ -4,9 +4,12 @@ import be.shark_zekrom.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -57,7 +60,12 @@ public class RecipesGui implements Listener {
             inventory.setItem(integer, new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE));
         }
 
-        inventory.setItem(24, ItemStack.deserialize(config.getConfigurationSection("Recipes." + number + ".item").getValues(true)));
+        ItemStack itemStack = ItemStack.deserialize(config.getConfigurationSection("Recipes." + number + ".item").getValues(true));
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setLore(null);
+        itemStack.setItemMeta(itemMeta);
+
+        inventory.setItem(24,itemStack);
 
         ArrayList<ItemStack> itemstack = new ArrayList<>();
         for (Map<?, ?> map : config.getMapList("Recipes." + number + ".items")) {
@@ -82,11 +90,18 @@ public class RecipesGui implements Listener {
         Inventory inventory = Bukkit.createInventory(null, 54, "Recipe list");
         player.openInventory(inventory);
 
+        if (config.getConfigurationSection("Recipes") == null) return;
         Object[] fields = config.getConfigurationSection("Recipes").getKeys(false).toArray();
+
         int slot = 0;
         for (Object key : fields) {
             if (Integer.parseInt((String) key) > start) {
-                inventory.setItem(slot, ItemStack.deserialize(config.getConfigurationSection("Recipes." + key + ".item").getValues(true)));
+                ItemStack itemStack = ItemStack.deserialize(config.getConfigurationSection("Recipes." + key + ".item").getValues(true));
+                ItemMeta itemMeta = itemStack.getItemMeta();
+                itemMeta.setLore(null);
+                itemStack.setItemMeta(itemMeta);
+
+                inventory.setItem(slot, itemStack);
                 slot++;
 
                 if (items.get(player) > 1) {
@@ -103,6 +118,7 @@ public class RecipesGui implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) throws IOException {
+        if (event.getClickedInventory() == null) return;
         if (event.getView().getTitle().equals("Show recipe") && event.getClickedInventory().getType() == InventoryType.CHEST) {
             event.setCancelled(true);
             Player player = (Player) event.getWhoClicked();
@@ -113,19 +129,46 @@ public class RecipesGui implements Listener {
         } else if (event.getView().getTitle().equals("Recipe list") && event.getClickedInventory().getType() == InventoryType.CHEST) {
             event.setCancelled(true);
             Player player = (Player) event.getWhoClicked();
+            if (event.getClick().equals(ClickType.RIGHT)) {
 
-            if (event.getSlot() != 48 && event.getSlot() != 50) {
-                if (event.getInventory().getItem(event.getSlot()) != null) {
-                    showRecipe(player, items.get(player) + (event.getSlot() + 1));
+                File file = new File(Main.getPlugin(Main.class).getDataFolder(), "config.yml");
+                YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+
+                int number = event.getSlot() + items.get(player) + 1;
+
+                Object[] fields = config.getConfigurationSection("Recipes").getKeys(false).toArray();
+
+                int slot = 0;
+                for (Object key : fields) {
+                    if (Integer.parseInt((String) key) > number) {
+                        config.set("Recipes." + (Integer.parseInt((String) key) - 1) ,config.getConfigurationSection("Recipes." +key));
+                    }
+                    slot++;
                 }
-            }
+                config.set("Recipes." + slot, null);
 
-            if (event.getInventory().getItem(50) != null && event.getSlot() == 50) {
-                recipeListGui(player, items.get(player) + 45);
-            }
+                config.save(file);
+                Recipes.removeRecipe();
+                Recipes.loadRecipes();
+                recipeListGui(player, items.get(player));
 
-            if (event.getInventory().getItem(48) != null && event.getSlot() == 48) {
-                recipeListGui(player, items.get(player) - 45);
+
+            } else {
+
+
+                if (event.getSlot() != 48 && event.getSlot() != 50) {
+                    if (event.getInventory().getItem(event.getSlot()) != null) {
+                        showRecipe(player, items.get(player) + (event.getSlot() + 1));
+                    }
+                }
+
+                if (event.getInventory().getItem(50) != null && event.getSlot() == 50) {
+                    recipeListGui(player, items.get(player) + 45);
+                }
+
+                if (event.getInventory().getItem(48) != null && event.getSlot() == 48) {
+                    recipeListGui(player, items.get(player) - 45);
+                }
             }
         } else if (event.getView().getTitle().equals("Create recipe") && event.getClickedInventory().getType() == InventoryType.CHEST) {
             Player player = (Player) event.getWhoClicked();
@@ -136,6 +179,8 @@ public class RecipesGui implements Listener {
             }
 
             if (event.getSlot() == 40 && event.getInventory().getItem(24) != null) {
+                player.closeInventory();
+
                 Recipes.removeRecipe();
 
                 File file = new File(Main.getPlugin(Main.class).getDataFolder(), "config.yml");
@@ -165,8 +210,6 @@ public class RecipesGui implements Listener {
                 balloon.setItemMeta(balloonMeta);
                 config.set("Recipes." + (integer + 1) + ".item",balloon.serialize());
                 config.save(file);
-
-                player.closeInventory();
                 Recipes.loadRecipes();
             }
         }

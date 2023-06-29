@@ -136,9 +136,6 @@ public class Main extends JavaPlugin {
             config.set("Balloons.item.displayname", "§eitem");
 
         }
-        config.addDefault("Balloon.Recipes", null);
-
-
         config.options().copyDefaults(true);
         saveConfig();
 

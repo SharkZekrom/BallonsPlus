@@ -39,22 +39,24 @@ public class Commands implements CommandExecutor, TabExecutor {
                 player.sendMessage(ChatColor.AQUA + "/balloons+ create <name>");
                 player.sendMessage(ChatColor.AQUA + "/balloons+ set <player> <balloon>");
                 player.sendMessage(ChatColor.AQUA + "/balloons+ remove");
+                player.sendMessage(ChatColor.AQUA + "/balloons+ recipes create");
+                player.sendMessage(ChatColor.AQUA + "/balloons+ recipes list");
             }
             if (args[0].equalsIgnoreCase("remove")) {
                 if (SummonBalloons.balloons.containsKey(player)) {
                     SummonBalloons.removeBalloonWithGiveItem(player);
                     SummonBalloons.playerBalloons.remove(player);
 
-                    player.sendMessage(Main.getInstance().getConfig().getString("BalloonPrefix") + Main.getInstance().getConfig().getString("BalloonsRemoved"));
+                    player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("BalloonsRemoved"));
 
                 }
             }
             if (args[0].equalsIgnoreCase("inventory")) {
                 if (Main.BalloonWithItemInInventory) {
-                    player.sendMessage("this command can only use if BalloonWithItemInInventory is false");
+                    player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("CantOpenInventoryWithBalloonWithItemInInventory"));
                 } else {
                     if (player.isInsideVehicle()) {
-                        player.sendMessage(Main.getInstance().getConfig().getString("Prefix") + Main.getInstance().getConfig().getString("CantOpenInventory"));
+                        player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("CantOpenInventory"));
 
                     } else {
                         Menu.inventory(player, 0);
@@ -76,21 +78,24 @@ public class Commands implements CommandExecutor, TabExecutor {
         } else if (args.length > 1) {
             if (args[0].equalsIgnoreCase("recipes")) {
                 if (args[1].equalsIgnoreCase("create")) {
-                    RecipesGui.recipeCreateGui(player);
+                    if (player.hasPermission("balloons+.recipes.create")) {
+                        RecipesGui.recipeCreateGui(player);
+                    }
                 }
                 if (args[1].equalsIgnoreCase("list")) {
-                    RecipesGui.recipeListGui(player, 0);
-                }
-                if (args[1].equalsIgnoreCase("remove")) {
-
+                    if (Main.BalloonWithItemInInventory) {
+                        RecipesGui.recipeListGui(player, 0);
+                    }
                 }
                 if (args[1].equalsIgnoreCase("reload")) {
-                    Recipes.loadRecipes();
+                    if (player.hasPermission("balloons+.recipes.reload")) {
+                        Recipes.loadRecipes();
+                    }
                 }
             }
             if (args[0].equalsIgnoreCase("spawn")) {
                 if (Main.BalloonWithItemInInventory) {
-                    player.sendMessage("this command can only use if BalloonWithItemInInventory is false");
+                    player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("CantOpenInventoryWithBalloonWithItemInInventory"));
                 } else {
                     File file = new File(Main.getInstance().getDataFolder(), "config.yml");
                     YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
@@ -143,12 +148,13 @@ public class Commands implements CommandExecutor, TabExecutor {
                 }
             }
 
+            /*
             if (args[0].equalsIgnoreCase("unequip")) {
                 if (player.hasPermission("balloons+.remove")) {
                     Player target = Bukkit.getPlayer(args[1]);
                     if (target != null) {
                         SummonBalloons.removeBalloon(target);
-                        player.sendMessage(Main.getInstance().getConfig().getString("Prefix") + Main.getInstance().getConfig().getString("BalloonRemovedForPlayer"));
+                        player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("BalloonRemovedForPlayer"));
                     }
                 }
             }
@@ -157,31 +163,25 @@ public class Commands implements CommandExecutor, TabExecutor {
                     Player target = Bukkit.getPlayer(args[1]);
                     if (target != null) {
                         //SUMMON BALLOON
-                        player.sendMessage(Main.getInstance().getConfig().getString("Prefix") + Main.getInstance().getConfig().getString("BalloonSetForPlayer"));
+                        player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("BalloonSetForPlayer"));
                     }
                 }
             }
 
-        } else {
-            if (player.isInsideVehicle()) {
-                player.sendMessage(Main.getInstance().getConfig().getString("Prefix") + Main.getInstance().getConfig().getString("CantOpenInventory"));
+             */
 
-            } else {
-                Menu.inventory(player, 0);
-            }
-            /*
+        } else {
             if (Main.BalloonWithItemInInventory) {
-                player.sendMessage("The menu can only be opened if BalloonWithItemInInventory is false");
+                player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("CantOpenInventoryWithBalloonWithItemInInventory"));
             } else {
                 if (player.isInsideVehicle()) {
-                    player.sendMessage(Main.getInstance().getConfig().getString("Prefix") + Main.getInstance().getConfig().getString("CantOpenInventory"));
+                    player.sendMessage(Main.prefix + Main.getInstance().getConfig().getString("CantOpenInventory"));
 
                 } else {
                     Menu.inventory(player, 0);
                 }
             }
 
-            */
         }
         return false;
     }
@@ -214,11 +214,21 @@ public class Commands implements CommandExecutor, TabExecutor {
             arguments.add("spawn");
             arguments.add("remove");
             arguments.add("set");
+            arguments.add("recipes");
+
             if (sender.hasPermission("balloon+.*")) {
                 arguments.add("reload");
                 arguments.add("create");
             }
+        } else if (args.length == 2 && args[0].equalsIgnoreCase("recipes")) {
+            if (sender.hasPermission("balloon+.*")) {
+                arguments.add("create");
+
+            }
+            arguments.add("list");
+
         }
+
         return arguments;
     }
 

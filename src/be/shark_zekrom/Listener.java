@@ -148,11 +148,11 @@ public class Listener implements org.bukkit.event.Listener {
                             itemMeta.setCustomModelData(Main.getInstance().getConfig().getInt("Balloons." + SummonBalloons.playerBalloons.get(player) + ".custommodeldata"));
                             itemStack.setItemMeta(itemMeta);
 
-                            SummonBalloons.summonBalloon(player, itemStack,100.0);
+                            SummonBalloons.summonBalloon(player, itemStack, 100.0);
                             SummonBalloons.as.get(player).getEquipment().setHelmet(itemStack);
                         } else {
 
-                            SummonBalloons.summonBalloon(player, Skulls.createSkull(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".head")),100.0);
+                            SummonBalloons.summonBalloon(player, Skulls.createSkull(Main.getInstance().getConfig().getString("Balloons." + SummonBalloons.playerBalloons.get(player) + ".head")), 100.0);
 
                         }
                     }
@@ -183,22 +183,24 @@ public class Listener implements org.bukkit.event.Listener {
         if (!player.isInsideVehicle()) {
 
             if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-                if (item.hasItemMeta()) {
-                    if (item.getItemMeta().hasDisplayName()) {
-                        if (item.getItemMeta().getDisplayName().contains("§eBalloons+ : ")) {
-                            event.setCancelled(true);
-                            if (!SummonBalloons.balloons.containsKey(player)) {
+                if (item != null) {
+                    if (item.hasItemMeta()) {
+                        if (item.getItemMeta().hasDisplayName()) {
+                            if (item.getItemMeta().getDisplayName().contains("§eBalloons+ : ")) {
+                                event.setCancelled(true);
+                                if (!SummonBalloons.balloons.containsKey(player)) {
 
-                                SummonBalloons.playerBalloons.put(player, item.getItemMeta().getDisplayName().split(" : ")[1]);
-                                String percentageBalloon = item.getItemMeta().getLore().get(0).split(" : ")[1].replace("%", "");
+                                    SummonBalloons.playerBalloons.put(player, item.getItemMeta().getDisplayName().split(" : ")[1]);
+                                    String percentageBalloon = item.getItemMeta().getLore().get(0).split(" : ")[1].replace("%", "");
 
-                                if (Double.parseDouble(percentageBalloon) > 0.0) {
-                                    SummonBalloons.summonBalloon(player, player.getEquipment().getItemInMainHand(), Double.parseDouble(percentageBalloon));
-                                    player.getEquipment().setItem(EquipmentSlot.HAND, null);
+                                    if (Double.parseDouble(percentageBalloon) > 0.0) {
+                                        SummonBalloons.summonBalloon(player, player.getEquipment().getItemInMainHand(), Double.parseDouble(percentageBalloon));
+                                        player.getEquipment().setItem(EquipmentSlot.HAND, null);
 
+                                    }
                                 }
-                            }
 
+                            }
                         }
                     }
                 }

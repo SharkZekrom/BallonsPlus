@@ -101,6 +101,7 @@ public class Main extends JavaPlugin {
         config.addDefault("BalloonWithItemInInventory", false);
         config.addDefault("NumberOfPourcentageLostByHour", 1.0);
         config.addDefault("NumberOfPourcentageInflateByHour", 1.0);
+        config.addDefault("CantOpenInventoryWithBalloonWithItemInInventory", "§cYou can't open this inventory.");
         config.addDefault("BalloonPrefix", "§b[Balloons+] ");
         config.addDefault("BalloonReload", "§bSuccessfully reloaded!");
         config.addDefault("NoBalloonsFound", "§bNo balloons found with this name.");
@@ -151,7 +152,11 @@ public class Main extends JavaPlugin {
         prefix = config.getString("BalloonPrefix");
 
         Bukkit.getLogger().info("Balloons+ enabled !");
-        Recipes.loadRecipes();
+
+
+        if (BalloonWithItemInInventory) {
+            Recipes.loadRecipes();
+        }
 
         new BukkitRunnable() {
             @Override
